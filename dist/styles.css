@@ -245,3 +245,16 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .hero-bubble{position:absolute;bottom:100%;left:50%;translate:-50% -6px;padding:3px 7px;background:#fff7dc;color:#29254f;border:2px solid #29254f;font-size:12px;font-style:normal;white-space:nowrap;opacity:0;pointer-events:none}
 .hero-bubble.show{animation:heroBubble 1s steps(6) forwards}
 @keyframes heroBubble{0%{opacity:0;translate:-50% 0}15%,80%{opacity:1;translate:-50% -8px}100%{opacity:0;translate:-50% -12px}}
+/* ===== 오른쪽 칸: 실수하면 올라오는 바닥 ===== */
+.playfield>.dead-line{display:none}
+.floor-meter{position:absolute;z-index:5;right:0;top:calc(env(safe-area-inset-top) + 44px);bottom:62px;width:34px;background:#11102acc repeating-linear-gradient(to top,transparent 0 calc(10% - 1px),#ffffff1c calc(10% - 1px) 10%);border-left:3px solid #29254f;box-shadow:-3px 0 0 #0d0c21}
+.kb-open .floor-meter{bottom:18px;top:calc(env(safe-area-inset-top) + 40px)}
+.fm-dead{position:absolute;z-index:2;top:-3px;left:-3px;right:0;padding-top:6px;border-top:4px solid #ff5171;color:#ff6685;font-size:8px;font-weight:400;text-align:center;letter-spacing:0;text-shadow:1px 1px 0 #0d0c21}
+.fm-fill{position:absolute;left:0;right:0;bottom:0;height:0;background:repeating-linear-gradient(90deg,#4d477d 0 8px,#7a73b8 8px 16px);border-top:4px solid #ffd84d;box-shadow:0 -3px 0 #ff6685;transition:height .28s steps(4)}
+.floor-meter.bump{animation:meterBump .3s steps(3)}
+.floor-meter.drop .fm-fill{border-top-color:#57d7d9}
+.floor-meter.critical .fm-dead{animation:deadlineAlarm .4s steps(2) infinite}
+.floor-meter.critical .fm-fill{background:repeating-linear-gradient(90deg,#5a1d3a 0 8px,#ff5171 8px 16px)}
+.playfield.deadline-hit .floor-meter{animation:deadlineAlarm .2s steps(2) infinite}
+@keyframes meterBump{0%{translate:0 0}30%{translate:-4px 3px}60%{translate:3px -2px}100%{translate:0 0}}
+.hero-sprite svg{overflow:visible}
