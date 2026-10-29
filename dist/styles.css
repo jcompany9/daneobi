@@ -258,3 +258,10 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .playfield.deadline-hit .floor-meter{animation:deadlineAlarm .2s steps(2) infinite}
 @keyframes meterBump{0%{translate:0 0}30%{translate:-4px 3px}60%{translate:3px -2px}100%{translate:0 0}}
 .hero-sprite svg{overflow:visible}
+/* ===== 졸라맨: 오른쪽 칸 안, 올라오는 바닥 위 ===== */
+.floor-meter{width:46px}
+.floor-meter .hero{left:50%;translate:-50% 0;margin-bottom:4px;bottom:100%}
+.floor-meter .hero-bubble{left:auto;right:100%;bottom:55%;translate:-2px 0;font-size:11px;padding:2px 5px}
+.floor-meter .hero-bubble.show{animation:heroBubbleSide 1s steps(6) forwards}
+@keyframes heroBubbleSide{0%{opacity:0;translate:4px 0}15%,80%{opacity:1;translate:-2px 0}100%{opacity:0;translate:-2px -6px}}
+.floor-meter .fm-dead{z-index:6}
