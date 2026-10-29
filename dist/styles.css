@@ -183,3 +183,19 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .hero-art,.start-copy{cursor:default}
 .rank-btn{display:block;width:100%;margin-top:14px;padding:12px;border:3px solid #29254f;background:#201d49;color:#ffd84d;font:inherit;font-size:16px;box-shadow:0 5px 0 #29254f;cursor:pointer}
 .rank-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #29254f}
+/* ===== 상단: 배경 없이 게임 화면 위에 Lv, 점수, 소리만 띄움. 맨 위 얇은 막대는 다음 레벨까지 남은 시간 ===== */
+.game-screen{position:relative}
+.hud,.kb-open .hud{position:absolute;top:0;left:0;right:0;z-index:8;height:auto;padding:calc(8px + env(safe-area-inset-top)) 10px 0;background:transparent;border:0;box-shadow:none;align-items:center;gap:10px;pointer-events:none}
+.hud>*{pointer-events:auto}
+.hud .tier,.hud .combo{display:none}
+.hud .stat b,.kb-open .hud .stat b{font-size:16px;color:#fff7dc;text-shadow:2px 2px 0 #0d0c21,0 0 6px #0d0c21}
+.hud .level b{color:#57d7d9}
+.hud .icon-btn,.kb-open .icon-btn{width:28px;height:28px;font-size:11px;opacity:.85}
+.pressure-meter,.kb-open .pressure-meter{position:absolute;top:env(safe-area-inset-top);bottom:auto;left:0;right:0;height:4px;pointer-events:none}
+.pressure-meter>i{height:4px;background:#11102a80}
+.pressure-meter em{background:linear-gradient(90deg,#57d7d9,#ffd84d);transition:transform .25s linear}
+.playfield{padding-top:0}
+.dead-line{top:calc(env(safe-area-inset-top) + 46px)}
+.kb-open .dead-line{top:calc(env(safe-area-inset-top) + 42px)}
+.playfield.critical .dead-line{animation:deadlineAlarm .5s steps(2) infinite}
+.playfield.critical .ground{box-shadow:0 -4px 0 #ff5171}
