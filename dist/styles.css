@@ -199,3 +199,7 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .kb-open .dead-line{top:calc(env(safe-area-inset-top) + 42px)}
 .playfield.critical .dead-line{animation:deadlineAlarm .5s steps(2) infinite}
 .playfield.critical .ground{box-shadow:0 -4px 0 #ff5171}
+/* 오늘의 순위 버튼: 시작 카드 바깥, 게임 시작 버튼 위 */
+.start-screen>.rank-btn{position:relative;z-index:1;align-self:center;width:auto;margin:auto 0 16px;padding:10px 20px;font-size:16px;box-shadow:4px 4px 0 #29254f}
+.start-screen>.rank-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #29254f}
+.start-screen>.rank-btn+.start-card{margin-top:0}
