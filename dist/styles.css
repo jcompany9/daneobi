@@ -97,3 +97,34 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 .start-card .sound-toggle{display:block;margin:8px auto 0;padding:6px 12px;font-size:11px}
 .start-card .sound-toggle.off{opacity:.6}
 .kb-open .hud .sound-toggle{font-size:13px}
+/* ===== 오락실 HIGH SCORES ===== */
+.hiscore{display:none;position:absolute;z-index:3;top:0;left:0;right:0;flex-direction:column;align-items:center;padding:calc(14px + env(safe-area-inset-top)) 20px 8px;background:#201d49;border-bottom:4px solid #ffd84d;box-shadow:0 4px 0 #0d0c21;color:#fff7dc;cursor:pointer;overflow:hidden}
+.start-screen.show-rank .hiscore{display:flex}
+.start-screen.show-rank .hero-art,.start-screen.show-rank .start-copy{visibility:hidden}
+.hero-art,.start-copy{cursor:pointer}
+.hs-title{margin:0;font-size:15px;color:#ff6685;letter-spacing:.06em;text-shadow:2px 2px 0 #0d0c21;animation:hsBlink 1s steps(2) infinite}
+.hs-date{margin:4px 0 8px;font-size:9px;color:#9e98d1}.hs-date em{font-style:normal}
+.hs-head,.hs-list li{display:grid;grid-template-columns:44px 1fr 46px 30px;gap:8px;width:100%;max-width:330px;align-items:center}
+.hs-head{font-size:8px;color:#57d7d9;padding-bottom:4px;border-bottom:2px dashed #4d477d}
+.hs-head span:nth-child(2){text-align:right}
+.hs-list{list-style:none;margin:4px 0 0;padding:0;width:100%;max-width:330px;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly}
+.hs-list li{font-size:12px;line-height:1.5;text-shadow:2px 2px 0 #0d0c21}
+.hs-list li b{text-align:right;font-weight:700}
+.hs-list li small{font-size:8px;color:#9e98d1}
+.hs-list .rank-1{color:#ffd84d}.hs-list .rank-2{color:#ff6685}.hs-list .rank-3{color:#57d7d9}
+.hs-list .rank-4,.hs-list .rank-5,.hs-list .rank-6{color:#fff7dc}.hs-list .rank-7,.hs-list .rank-8,.hs-list .rank-9,.hs-list .rank-10{color:#b9b4e6}
+.hs-list li.me{animation:hsBlink .6s steps(2) infinite}
+.hs-tap{margin:6px 0 0;font-size:8px;color:#6b6594}
+@keyframes hsBlink{50%{opacity:.25}}
+/* 이름 입력 */
+.name-entry{width:min(100%,340px);margin:14px 0 0;padding:12px 14px;text-align:center;background:#201d49;border:4px solid #29254f;box-shadow:5px 5px 0 #ff6685;color:#fff7dc}
+.name-entry[hidden]{display:none}
+.ne-title{margin:0;font-size:18px;color:#ffd84d;text-shadow:2px 2px 0 #ff5171;animation:hsBlink .8s steps(2) infinite}
+.ne-rank{margin:4px 0 8px;font-size:11px;color:#57d7d9}
+.name-entry label{display:block;font-size:9px;color:#9e98d1;margin-bottom:6px;letter-spacing:.08em}
+.ne-row{display:flex;gap:8px;justify-content:center}
+.ne-row input{width:120px;height:44px;text-align:center;font-size:22px;letter-spacing:.3em;text-transform:uppercase;border:3px solid #fff7dc;background:#11102a;color:#ffd84d;outline:none;padding:0 0 0 .3em}
+.ne-row input:focus{border-color:#57d7d9}
+.ne-row input:disabled{opacity:.6}
+.ne-row button{width:60px;border:3px solid #29254f;background:#ffd84d;color:#29254f;font-size:14px;box-shadow:3px 3px 0 #ff6685}
+.ne-msg{margin:8px 0 0;min-height:1em;font-size:11px;color:#ffd84d}

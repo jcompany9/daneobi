@@ -2,6 +2,8 @@
 
 영어 단어가 떨어지면 한글 뜻을 입력하는 타자 게임. 빌드 도구 없이 `dist/` 폴더의 정적 파일(HTML/CSS/JS)로 동작하고, GitHub(jcompany9/daneobi)에 올리면 Vercel이 배포함.
 
+`api/scores.js`는 오늘의 순위를 저장하는 Vercel 서버 함수. Upstash Redis 환경 변수(KV_REST_API_URL/TOKEN 또는 UPSTASH_REDIS_REST_URL/TOKEN)가 없으면 503을 돌려주고, 게임은 기기 저장 순위로 동작함.
+
 ## 작업 규칙
 - 사용자는 한국어로 소통함. 설명은 한국어로, 쉬운 말로.
 - **업데이트할 때마다 [CHANGELOG.md](CHANGELOG.md) 맨 위에 항목을 추가**하고 같은 커밋에 포함할 것. 날짜와 시간, 한 줄 요약, 바뀐 내용, 커밋 번호.

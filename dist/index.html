@@ -19,6 +19,13 @@
         <h1 id="title">단어<span>비</span></h1>
         <p class="subtitle">영단어가 바닥에 닿기 전에<br><strong>한글 뜻</strong>을 입력하세요.</p>
       </div>
+      <div id="hiscore" class="hiscore" aria-label="오늘의 순위">
+        <p class="hs-title">TODAY'S HIGH SCORES</p>
+        <p class="hs-date"><span id="hsDate"></span><em id="hsNote"></em></p>
+        <div class="hs-head"><span>RANK</span><span>SCORE</span><span>NAME</span></div>
+        <ol id="hsList" class="hs-list"></ol>
+        <p class="hs-tap">TAP TO SWITCH</p>
+      </div>
       <div class="start-card">
         <div class="feature-row"><span id="vocabCount">300</span><p><b>혼합 영어 어휘</b><small>단어·표현·접사·어근</small></p></div>
         <div class="feature-row"><span>▲</span><p><b>다가오는 바닥선</b><small>DEAD LINE에 닿으면 게임 오버</small></p></div>
@@ -62,6 +69,13 @@
       <div id="resultBadge" class="result-badge">오늘의 기록</div>
       <h2 id="resultTitle">수고했어요!</h2>
       <div class="score-ring"><span id="finalScore">0</span><small>점</small></div>
+      <form id="nameEntry" class="name-entry" autocomplete="off" hidden>
+        <p class="ne-title">NEW RECORD!</p>
+        <p id="neRank" class="ne-rank"></p>
+        <label for="neInput">ENTER YOUR NAME</label>
+        <div class="ne-row"><input id="neInput" maxlength="3" placeholder="AAA" enterkeyhint="done" autocapitalize="characters" spellcheck="false" /><button id="neBtn" type="submit">OK</button></div>
+        <p id="neMsg" class="ne-msg"></p>
+      </form>
       <div class="result-grid">
         <p><small>맞힌 단어</small><b id="correctCount">0</b></p>
         <p><small>최고 콤보</small><b id="maxCombo">0</b></p>
