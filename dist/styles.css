@@ -65,3 +65,20 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 .landscape .rotate-notice{display:flex}
 .landscape .app{visibility:hidden}
 @keyframes rotateHint{0%,30%{transform:rotate(-90deg)}60%,100%{transform:rotate(0)}}
+/* ===== 바닥 타격감 ===== */
+.word.splat{transform:none;transform-origin:50% 100%;pointer-events:none;border-color:#ff5171;color:#ff5171;box-shadow:5px 5px 0 #ff5171;animation:splat .42s steps(5) forwards}
+.spark{position:absolute;z-index:6;width:7px;height:7px;pointer-events:none;box-shadow:2px 2px 0 #17152f;animation:spark .52s steps(6) forwards}
+.playfield.ground-hit{animation:groundHit .32s steps(4)}
+.playfield.ground-hit .ground{animation:groundFlash .32s steps(2)}
+.playfield.ground-hit .word-layer:after{content:"";position:absolute;left:0;right:0;bottom:0;height:45%;pointer-events:none;background:linear-gradient(transparent,#ff517155);animation:hitGlow .32s steps(3) forwards}
+@keyframes splat{0%{transform:scale(1.15,.7)}35%{transform:scale(1.35,.45);opacity:1}100%{transform:scale(1.6,.15) translateY(30px);opacity:0}}
+@keyframes spark{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+@keyframes groundHit{0%,100%{transform:translate(0,0)}25%{transform:translate(-5px,4px)}50%{transform:translate(4px,-3px)}75%{transform:translate(-2px,2px)}}
+@keyframes hitGlow{from{opacity:1}to{opacity:0}}
+/* ===== 결과 이미지 미리보기 (길게 눌러 저장) ===== */
+.image-modal{position:absolute;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:#17152fe6}
+.image-modal>div{width:100%;max-height:100%;display:flex;flex-direction:column;align-items:center;gap:10px;overflow:auto;padding:14px;background:#fff7dc;border:4px solid #29254f;box-shadow:6px 6px 0 #ff6685}
+.image-modal .image-tip{margin:0;padding:6px 10px;background:#ffd84d;border:2px solid #29254f;color:#29254f;font-size:12px}
+.image-modal img{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain;border:3px solid #29254f;-webkit-touch-callout:default;user-select:auto}
+.image-modal .ext-btn{display:block;text-align:center;text-decoration:none;font-size:13px;padding:12px}
+.image-modal .text-btn{padding:8px 16px}
