@@ -55,24 +55,16 @@
       </form>
     </section>
 
-    <section id="resultScreen" class="screen result-screen" aria-labelledby="resultTitle">
+    <section id="resultScreen" class="screen result-screen" aria-label="결과">
       <div id="resultBadge" class="result-badge">오늘의 기록</div>
-      <h2 id="resultTitle">수고했어요!</h2>
       <div class="score-ring"><span id="finalScore">0</span><small>점</small></div>
-      <form id="nameEntry" class="name-entry" autocomplete="off" hidden>
-        <p class="ne-title">NEW RECORD!</p>
-        <p id="neRank" class="ne-rank"></p>
-        <label for="neInput">ENTER YOUR NAME</label>
-        <div class="ne-row"><input id="neInput" maxlength="3" placeholder="AAA" enterkeyhint="done" autocapitalize="characters" spellcheck="false" /><button id="neBtn" type="submit">OK</button></div>
-        <p id="neMsg" class="ne-msg"></p>
-      </form>
       <div class="result-grid">
         <p><small>맞힌 단어</small><b id="correctCount">0</b></p>
         <p><small>최고 콤보</small><b id="maxCombo">0</b></p>
         <p><small>놓친 단어</small><b id="missCount">0</b></p>
       </div>
       <div id="review" class="review"></div>
-      <button id="saveImageBtn" class="primary save-btn">결과 이미지 저장 ↓</button>
+      <div class="result-actions"><button id="saveImageBtn" class="primary save-btn">이미지 저장 ↓</button><button id="shareBtn" class="primary share-btn">공유하기</button></div>
       <button id="retryBtn" class="primary retry-btn">다시 도전하기</button>
       <button id="homeBtn" class="text-btn">처음으로</button>
     </section>
@@ -86,6 +78,18 @@
       <div class="hs-head"><span>RANK</span><span>SCORE</span><span>NAME</span></div>
       <ol id="hsList" class="hs-list"></ol>
       <button id="hsClose" type="button" class="hs-close">▼ 닫기</button>
+    </div>
+
+    <!-- 오늘 10위 안에 들면 뜨는 이름 입력 팝업 -->
+    <div id="neModal" class="ne-modal" role="dialog" aria-modal="true" aria-label="이름 남기기" hidden>
+        <form id="nameEntry" class="name-entry" autocomplete="off">
+          <button id="neClose" type="button" class="ne-x" aria-label="닫기">✕</button>
+          <p class="ne-title">NEW RECORD!</p>
+          <p id="neRank" class="ne-rank"></p>
+          <label for="neInput">ENTER YOUR NAME</label>
+          <div class="ne-row"><input id="neInput" maxlength="3" placeholder="AAA" enterkeyhint="done" autocapitalize="characters" spellcheck="false" /><button id="neBtn" type="submit">OK</button></div>
+          <p id="neMsg" class="ne-msg"></p>
+        </form>
     </div>
 
     <div id="pauseModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">

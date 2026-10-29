@@ -203,3 +203,16 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .start-screen>.rank-btn{position:relative;z-index:1;align-self:center;width:auto;margin:auto 0 16px;padding:10px 20px;font-size:16px;box-shadow:4px 4px 0 #29254f}
 .start-screen>.rank-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #29254f}
 .start-screen>.rank-btn+.start-card{margin-top:0}
+/* ===== 결과 화면: 점수 강조, 이미지 저장 / 공유하기 버튼 ===== */
+.result-screen .score-ring{margin-top:14px}
+.result-screen .score-ring span{font-size:56px}
+.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:auto}
+.result-screen .result-actions .primary{margin:0;padding:14px 8px;font-size:15px}
+.result-screen .share-btn{border:3px solid #29254f;background:#ffd84d;color:#29254f;box-shadow:0 6px 0 #29254f;text-shadow:none}
+.result-screen .retry-btn{margin-top:14px}
+/* ===== 이름 입력 팝업 ===== */
+.ne-modal{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:20px;background:#17152fcc}
+.ne-modal[hidden]{display:none}
+.ne-modal .name-entry{position:relative;width:min(100%,320px);margin:0;padding:26px 16px 16px}
+.ne-x{position:absolute;top:6px;right:6px;width:32px;height:32px;padding:0;border:2px solid #9e98d1;background:transparent;color:#fff7dc;font:inherit;font-size:16px;line-height:1;cursor:pointer}
+.ne-x:active{background:#ffffff22}
