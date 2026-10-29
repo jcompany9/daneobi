@@ -272,3 +272,28 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 /* 공유하기 버튼 아이콘 */
 .share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .share-btn .btn-icon{flex:0 0 auto}
+/* ===== 졸라맨 작게 + 숨쉬기 대기 + 과장된 당황 ===== */
+.hero,.floor-meter .hero{width:22px;height:32px}
+.hero-sprite{width:22px;height:32px}
+/* 대기: 숨 쉬듯 살짝 부풀었다 줄어듦 */
+.hero .hero-sprite{animation:heroBreath 2.4s steps(4) infinite}
+@keyframes heroBreath{0%,100%{scale:1 1}50%{scale:1.04 1.07}}
+/* 실수: 팔 허우적(만세 프레임) + 높이 튀어 빙글 + 착지하며 납작 */
+.hero.freak .f1,.hero.freak .f2{display:none}
+.hero.freak .f3{display:block}
+.hero.freak .hero-sprite{animation:heroFreak .9s steps(12)}
+@keyframes heroFreak{0%{scale:1.35 .6;translate:0 0;rotate:0}12%{scale:.8 1.3;translate:0 -10px}30%{translate:-3px -30px;rotate:-200deg;scale:1}48%{translate:3px -30px;rotate:-360deg}66%{translate:0 0;rotate:-360deg;scale:1.5 .5}80%{scale:.9 1.15;rotate:-360deg}100%{scale:1;rotate:-360deg;translate:0 0}}
+.hero-alert{display:none;position:absolute;left:50%;top:-16px;translate:-50% 0;color:#ff5171;font-size:14px;font-style:normal;font-weight:700;text-shadow:1px 1px 0 #fff7dc,2px 2px 0 #29254f;animation:heroAlert .3s steps(2) infinite}
+.hero.freak .hero-alert{display:block}
+@keyframes heroAlert{50%{translate:-50% -3px;scale:1.2}}
+/* 오답: 움찔 */
+.hero.flinch .hero-sprite{animation:heroFlinch .36s steps(6)}
+@keyframes heroFlinch{0%,100%{translate:0 0}20%{translate:-3px 0;scale:1.1 .9}40%{translate:3px 0}60%{translate:-2px 0}80%{translate:2px 0}}
+.hero.jump .hero-sprite{animation:heroJump .38s steps(6)}
+@keyframes heroJump{50%{translate:0 -16px}}
+.hero-stars{top:-10px;font-size:8px}
+.hero-sweat{width:3px;height:5px;top:2px}
+/* ===== 금: 카드 가장자리에만 (글자를 가리지 않게) ===== */
+.word.crack-1:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 9 L6 14 L3 21 L9 26 M100 31 L94 27 L97 21' fill='none' stroke='%2329254f' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.word.crack-2:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 9 L6 14 L3 21 L9 26 M100 31 L94 27 L97 21 L92 16 M100 6 L95 9 M70 0 L68 5 L73 8 M28 40 L31 35 L26 32 M0 33 L5 31' fill='none' stroke='%2329254f' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.spark.chip{width:4px;height:4px;box-shadow:1px 1px 0 #17152f;animation:spark .45s steps(5) forwards}

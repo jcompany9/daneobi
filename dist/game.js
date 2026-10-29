@@ -63,9 +63,11 @@ function miss(i){const [w]=state.active.splice(i,1);groundImpact(w);w.node.remov
 function groundImpact(w){sfx.thud();const n=w.node,W=n.offsetWidth,H=n.offsetHeight,x=w.x,y=w.y??0;const splat=document.createElement('div');splat.className='word splat';splat.textContent=w.en;splat.style.left=x+'px';splat.style.top=y+'px';splat.style.width=W+'px';els.layer.appendChild(splat);setTimeout(()=>splat.remove(),420);impactAt(x,y+H,W)}
 // 바닥에 부딪힌 자리에서 파편이 튀고, 화면이 흔들리고, 바닥이 번쩍임
 function impactAt(x,bottom,W){const colors=['#ff5171','#ffd84d','#57d7d9','#fff7dc'];for(let k=0;k<10;k++){const s=document.createElement('i');s.className='spark';const a=Math.PI*(1.05+Math.random()*.9),d=40+Math.random()*60;s.style.left=(x+W*(.15+Math.random()*.7))+'px';s.style.top=bottom+'px';s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');s.style.background=colors[k%colors.length];els.layer.appendChild(s);setTimeout(()=>s.remove(),520)}els.field.classList.remove('ground-hit');void els.field.offsetWidth;els.field.classList.add('ground-hit')}
+// 금이 갈 때 카드 가장자리에서 작은 조각이 바깥쪽으로 튐 (글자는 가리지 않음)
+function chipOff(w){const n=w.node,W=n.offsetWidth,H=n.offsetHeight,x=w.x,y=w.y??0,cx=x+W/2,cy=y+H/2;for(let k=0;k<6;k++){const side=k%4,px=side===0?x:side===1?x+W:x+Math.random()*W,py=side===2?y:side===3?y+H:y+Math.random()*H;const dx=px-cx,dy=py-cy,len=Math.hypot(dx,dy)||1,d=14+Math.random()*16;const p=document.createElement('i');p.className='spark chip';p.style.left=px+'px';p.style.top=py+'px';p.style.background=k%2?'#fff7dc':'#29254f';p.style.setProperty('--dx',dx/len*d+'px');p.style.setProperty('--dy',dy/len*d+6+'px');els.layer.appendChild(p);setTimeout(()=>p.remove(),520)}}
 // 틀린 답: 떨어지는 단어 중 하나에 금이 감. 3번 금이 가면 파괴
 const CRACK_LIMIT=3;
-function crack(w){w.cracks=(w.cracks||0)+1;if(w.cracks>=CRACK_LIMIT){shatter(w);return}w.node.classList.remove('crack-1','crack-2','cracking');void w.node.offsetWidth;w.node.classList.add('crack-'+w.cracks,'cracking');sfx.crack(w.cracks);flash(`${w.en}에 금이 갔어요 ${w.cracks}/${CRACK_LIMIT}`,'#ffd84d')}
+function crack(w){w.cracks=(w.cracks||0)+1;hero.flinch();chipOff(w);if(w.cracks>=CRACK_LIMIT){shatter(w);return}w.node.classList.remove('crack-1','crack-2','cracking');void w.node.offsetWidth;w.node.classList.add('crack-'+w.cracks,'cracking');sfx.crack(w.cracks);flash(`${w.en}에 금이 갔어요 ${w.cracks}/${CRACK_LIMIT}`,'#ffd84d')}
 // 파괴: 카드가 세 조각으로 쪼개져 바닥으로 떨어지고, 부딪히면 놓친 단어처럼 위험 게이지 상승
 function shatter(w){const i=state.active.indexOf(w);if(i<0)return;state.active.splice(i,1);const n=w.node,W=n.offsetWidth,H=n.offsetHeight,x=w.x,y=w.y??TOP;const groundY=els.field.clientHeight-els.ground.offsetHeight;const drop=Math.max(0,groundY-H-y);const fallMs=Math.min(420,180+drop*.6);const cuts=['polygon(0 0,38% 0,30% 55%,42% 100%,0 100%)','polygon(38% 0,70% 0,62% 45%,72% 100%,42% 100%,30% 55%)','polygon(70% 0,100% 0,100% 100%,72% 100%,62% 45%)'];cuts.forEach((cp,k)=>{const sh=n.cloneNode(true);sh.className='word shard crack-2';sh.style.transform='none';sh.style.left=x+'px';sh.style.top=y+'px';sh.style.width=W+'px';sh.style.clipPath=cp;sh.style.setProperty('--dx',(k-1)*(18+Math.random()*16)+'px');sh.style.setProperty('--dy',drop+'px');sh.style.setProperty('--rot',(k-1)*(14+Math.random()*16)+'deg');sh.style.setProperty('--fall',fallMs+'ms');els.layer.appendChild(sh);setTimeout(()=>sh.remove(),620)});n.remove();sfx.shatter();flash(`${w.en} 파괴!`,'#ff5171');navigator.vibrate?.([30,20,30]);setTimeout(()=>{if(!state?.running)return;impactAt(x,groundY,W);sfx.thud();state.missed.push(w);raiseFloor();navigator.vibrate?.([60,25,90]);updateHud()},fallMs)}
 function flash(text,color){els.feedback.textContent=text;els.feedback.style.color=color;els.feedback.classList.remove('show');void els.feedback.offsetWidth;els.feedback.classList.add('show')}
@@ -179,23 +181,25 @@ const LEGS_WIDE=['.....K.....','....K.K....','...K...K...','..K.....K..','.K....
 const WALK_A=[...HEAD,'.....K.....','....KKK....','...K.K.K...','..K..K..K..','.K...K...K.',...LEGS_WIDE];
 const WALK_B=[...HEAD,'.....K.....','.....K.....','....KKK....','...K.K.K...','...K.K.K...','.....K.....','.....K.....','....K.K....','....K.K....','...K...K...','..KK...KK..'];
 const CHEER=['....KKK....','.K.KKKKK.K.','.K.KKKKK.K.','..K.KKK.K..','...K.K.K...','....KKK....','.....K.....','.....K.....','.....K.....','.....K.....',...LEGS_WIDE];
-function svg(rows){let r='';rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(PAL[c])r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PAL[c]}"/>`}));return`<svg viewBox="0 0 11 16" width="33" height="48" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
+function svg(rows){let r='';rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(PAL[c])r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PAL[c]}"/>`}));return`<svg viewBox="0 0 11 16" width="22" height="32" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
 const el=document.createElement('div');el.className='hero';el.setAttribute('aria-hidden','true');
-el.innerHTML=`<em class="hero-bubble"></em><div class="hero-sprite"><div class="f1">${svg(WALK_A)}</div><div class="f2">${svg(WALK_B)}</div><div class="f3">${svg(CHEER)}</div></div><i class="hero-stars">★ ★</i><i class="hero-sweat"></i>`;
+el.innerHTML=`<em class="hero-bubble"></em><div class="hero-sprite"><div class="f1">${svg(WALK_A)}</div><div class="f2">${svg(WALK_B)}</div><div class="f3">${svg(CHEER)}</div></div><i class="hero-stars">★ ★</i><i class="hero-sweat"></i><i class="hero-alert">!!</i>`;
 meterFill.appendChild(el);const bubble=el.querySelector('.hero-bubble');
 let x=60,dir=1,t=0,stun=0,timer=null;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
-function play(cls,ms){el.classList.remove('jump','bonk','oops','relief');void el.offsetWidth;el.classList.add(cls);clearTimeout(timer);timer=setTimeout(()=>el.classList.remove(cls),ms)}
+function play(cls,ms){el.classList.remove('jump','bonk','oops','relief','freak','flinch');void el.offsetWidth;el.classList.add(cls);clearTimeout(timer);timer=setTimeout(()=>el.classList.remove(cls),ms)}
 function say(text){bubble.textContent=text;bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show')}
 function reset(){stun=0;el.className='hero';el.style.display='';bubble.classList.remove('show')}
 function tick(dt){const panic=state.floor>=FLOOR_MAX-3;stun=Math.max(0,stun-dt);t+=dt;
- el.classList.toggle('step',Math.floor(t*(panic?9:1.6))%2===0);el.classList.toggle('panic',panic);el.classList.toggle('left',panic&&Math.floor(t*3)%2===0);el.classList.toggle('dance',state.combo>=10&&stun===0)}
+ const flail=el.classList.contains('freak');el.classList.toggle('step',(panic||flail)&&Math.floor(t*(flail?14:9))%2===0);el.classList.toggle('panic',panic);el.classList.toggle('left',(panic||flail)&&Math.floor(t*(flail?7:3))%2===0);el.classList.toggle('dance',state.combo>=10&&stun===0)}
 // 산산조각: 졸라맨 자리에서 도트 조각이 사방으로 튐
 function shatterHero(){const fr=els.field.getBoundingClientRect(),r=el.getBoundingClientRect(),cx=r.left-fr.left+r.width/2,cy=r.top-fr.top+r.height/2;for(let k=0;k<18;k++){const p=document.createElement('i');p.className='spark';const a=Math.random()*Math.PI*2,d=30+Math.random()*90;p.style.left=(cx+(Math.random()-.5)*20)+'px';p.style.top=(cy+(Math.random()-.5)*30)+'px';p.style.background=k%4?'#0b0a12':'#fff7dc';p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',Math.sin(a)*d+'px');els.layer.appendChild(p);setTimeout(()=>p.remove(),600)}el.style.display='none'}
 return{reset,tick,
  correct(){play('jump',380);if(state.combo>0&&state.combo%10===0)say(pick(['신난다!','최고야!','계속 가자!']))},
  // 바닥이 올라올 때마다 당황
- panic(){stun=.5;play('oops',420);say(state.floor>=FLOOR_MAX-3?pick(['살려줘!','안돼애!','으아아']):pick(['으악!','헉!','앗!']))},
+ panic(){stun=.9;play('freak',900);say(state.floor>=FLOOR_MAX-3?pick(['살려줘!','안돼애!','으아아']):pick(['으악!','헉!','앗!']))},
  relief(){play('relief',600);say('휴~')},
+ // 오답(카드에 금): 움찔
+ flinch(){if(!el.classList.contains('freak'))play('flinch',360)},
  danger(){},
  dead(){say('으앙…');el.classList.add('bonk');setTimeout(shatterHero,350)}}})();
