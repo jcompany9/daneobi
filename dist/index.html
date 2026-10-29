@@ -57,14 +57,14 @@
 
     <section id="resultScreen" class="screen result-screen" aria-label="결과">
       <div id="resultBadge" class="result-badge">오늘의 기록</div>
-      <div class="score-ring"><span id="finalScore">0</span><small>점</small></div>
+      <div class="score-ring"><small class="sr-label">SCORE</small><span id="finalScore">0</span></div>
       <div class="result-grid">
         <p><small>맞힌 단어</small><b id="correctCount">0</b></p>
         <p><small>최고 콤보</small><b id="maxCombo">0</b></p>
         <p><small>놓친 단어</small><b id="missCount">0</b></p>
       </div>
       <div id="review" class="review"></div>
-      <div class="result-actions"><button id="saveImageBtn" class="primary save-btn">이미지 저장 ↓</button><button id="shareBtn" class="primary share-btn">공유하기</button></div>
+      <div class="result-actions"><button id="saveImageBtn" class="primary save-btn">이미지 저장 ↓</button><button id="shareBtn" class="primary share-btn"><svg class="btn-icon" viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" aria-hidden="true"><g fill="currentColor"><rect x="11" y="1" width="4" height="4"/><rect x="1" y="6" width="4" height="4"/><rect x="11" y="11" width="4" height="4"/><rect x="5" y="6" width="2" height="1"/><rect x="7" y="5" width="2" height="1"/><rect x="9" y="4" width="2" height="1"/><rect x="5" y="9" width="2" height="1"/><rect x="7" y="10" width="2" height="1"/><rect x="9" y="11" width="2" height="1"/></g></svg><span class="btn-label">공유하기</span></button></div>
       <button id="retryBtn" class="primary retry-btn">다시 도전하기</button>
       <button id="homeBtn" class="text-btn">처음으로</button>
     </section>

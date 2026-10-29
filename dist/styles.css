@@ -265,3 +265,10 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .floor-meter .hero-bubble.show{animation:heroBubbleSide 1s steps(6) forwards}
 @keyframes heroBubbleSide{0%{opacity:0;translate:4px 0}15%,80%{opacity:1;translate:-2px 0}100%{opacity:0;translate:-2px -6px}}
 .floor-meter .fm-dead{z-index:6}
+/* 결과 점수: "SCORE 12,840" */
+.result-screen .score-ring{flex-direction:row;align-items:center;justify-content:center;gap:10px}
+.result-screen .score-ring span{line-height:1}
+.score-ring .sr-label{font-size:18px;letter-spacing:.08em;color:#ff6685}
+/* 공유하기 버튼 아이콘 */
+.share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.share-btn .btn-icon{flex:0 0 auto}
