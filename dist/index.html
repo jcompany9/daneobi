@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#fff7e8" />
+  <title>단어비 — 영어 뜻 타자 게임</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <section id="startScreen" class="screen start-screen active" aria-labelledby="title">
+      <div class="hero-art" aria-hidden="true">
+        <span class="cloud cloud-a"></span><span class="cloud cloud-b"></span>
+        <span class="drop d1">apple</span><span class="drop d2">dream</span><span class="drop d3">bright</span>
+      </div>
+      <div class="start-copy">
+        <p class="eyebrow">하루 3분, 손끝으로 외우기</p>
+        <h1 id="title">단어<span>비</span></h1>
+        <p class="subtitle">영단어가 땅에 닿기 전에<br><strong>한글 뜻</strong>을 입력하세요.</p>
+      </div>
+      <div class="start-card">
+        <div class="feature-row"><span>100</span><p><b>필수 영단어 100개</b><small>기초부터 차근차근</small></p></div>
+        <div class="feature-row"><span>♥3</span><p><b>세 번의 기회</b><small>놓쳐도 다시 도전</small></p></div>
+        <button id="startBtn" class="primary">게임 시작 <span>→</span></button>
+        <p class="best">최고 기록 <b id="bestStart">0</b>점</p>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" aria-label="게임 화면">
+      <header class="hud">
+        <button id="pauseBtn" class="icon-btn" aria-label="일시정지">Ⅱ</button>
+        <div class="stat"><small>SCORE</small><b id="score">0</b></div>
+        <div class="stat combo"><small>COMBO</small><b>×<span id="combo">0</span></b></div>
+        <div id="lives" class="lives" aria-label="남은 기회">♥♥♥</div>
+      </header>
+      <div id="playfield" class="playfield">
+        <div class="sky-line" aria-hidden="true"><span></span><i></i><span></span></div>
+        <div id="wordLayer" class="word-layer"></div>
+        <div id="feedback" class="feedback" role="status"></div>
+        <div class="ground" aria-hidden="true"><span>단어가 여기 닿기 전에!</span></div>
+      </div>
+      <form id="answerForm" class="answer-bar" autocomplete="off">
+        <label for="answer">한글 뜻</label>
+        <input id="answer" type="text" inputmode="text" enterkeyhint="done" placeholder="뜻을 입력하세요" maxlength="20" />
+        <button aria-label="정답 확인">↵</button>
+      </form>
+    </section>
+
+    <section id="resultScreen" class="screen result-screen" aria-labelledby="resultTitle">
+      <div class="result-badge">오늘의 기록</div>
+      <h2 id="resultTitle">수고했어요!</h2>
+      <div class="score-ring"><span id="finalScore">0</span><small>점</small></div>
+      <div class="result-grid">
+        <p><small>맞힌 단어</small><b id="correctCount">0</b></p>
+        <p><small>최고 콤보</small><b id="maxCombo">0</b></p>
+        <p><small>놓친 단어</small><b id="missCount">0</b></p>
+      </div>
+      <div id="review" class="review"></div>
+      <button id="retryBtn" class="primary">다시 도전하기</button>
+      <button id="homeBtn" class="text-btn">처음으로</button>
+    </section>
+
+    <div id="pauseModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+      <div><p class="eyebrow">잠깐 쉬어가요</p><h2 id="pauseTitle">일시정지</h2><button id="resumeBtn" class="primary">계속하기</button><button id="quitBtn" class="text-btn">게임 끝내기</button></div>
+    </div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
