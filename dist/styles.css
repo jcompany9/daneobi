@@ -322,3 +322,37 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .level-up small,.level-up em{display:none}
 .level-up{width:auto;padding:14px 22px}
 .level-up b{margin:0}
+/* ===== 하늘: 낮 → 노을 → 밤 ===== */
+.playfield:before{display:none}
+.sky{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sky>i{position:absolute;inset:0;opacity:0;transition:opacity 4s steps(16)}
+.sky-day{background:linear-gradient(#8bd9df 0%,#b9ecee 55%,#fff0c7 100%)}
+.sky-sunset{background:linear-gradient(#5b4b8a 0%,#b65f93 38%,#ef8a86 66%,#ffc27a 100%)}
+.sky-night{background:linear-gradient(#171634 0,#312d69 58%,#78568a 82%,#e88ca5 100%)}
+.phase-day .sky-day,.phase-sunset .sky-sunset,.phase-night .sky-night{opacity:1}
+/* 도트 구름 (낮, 노을) */
+.sky-cloud{position:absolute;left:-90px;width:64px;height:14px;background:#fff7dc;box-shadow:4px 4px 0 #514b8055;opacity:0;transition:opacity 4s;animation:cloudDrift 60s linear infinite}
+.sky-cloud:before{content:"";position:absolute;left:14px;top:-10px;width:28px;height:10px;background:inherit}
+.sky-cloud.c1{top:18%;animation-duration:70s;animation-delay:-20s}
+.sky-cloud.c2{top:38%;width:44px;animation-duration:55s;animation-delay:-45s;scale:.8}
+.sky-cloud.c3{top:58%;animation-duration:85s;animation-delay:-5s}
+.phase-day .sky-cloud{opacity:.9}.phase-sunset .sky-cloud{opacity:.45;background:#ffd6c9}
+@keyframes cloudDrift{from{translate:0 0}to{translate:calc(100vw + 180px) 0}}
+/* 별 (밤) */
+.sky-stars{position:absolute;inset:0 0 40% 0;opacity:0;transition:opacity 4s;background-image:radial-gradient(#fff7dc 1px,transparent 1.5px),radial-gradient(#ffd84d 1px,transparent 1.5px);background-size:53px 47px,89px 71px;background-position:7px 11px,31px 23px;animation:starTwinkle 2s steps(2) infinite}
+.phase-night .sky-stars{opacity:.8}
+@keyframes starTwinkle{50%{filter:brightness(.6)}}
+/* 낮: 상단 글자는 남색 */
+.phase-day .hud .stat b{color:#29254f;text-shadow:2px 2px 0 #fff7dc}
+.phase-day .hud .level b{color:#e0457b}
+/* 낮, 노을: 바닥·입력창·오른쪽 칸을 밝게 */
+.phase-day .ground,.phase-sunset .ground{background:repeating-linear-gradient(90deg,#f6b7c3 0 20px,#ffd6dd 20px 40px)}
+.phase-sunset .ground{background:repeating-linear-gradient(90deg,#d97a92 0 20px,#f0a3b3 20px 40px)}
+.phase-day .answer-bar,.phase-sunset .answer-bar{background:#fff0c7;border-top:4px solid #29254f}
+.phase-day .floor-meter,.phase-sunset .floor-meter{background:#fff7dcb3 repeating-linear-gradient(to top,transparent 0 calc(10% - 1px),#29254f22 calc(10% - 1px) 10%)}
+.phase-day .fm-fill,.phase-sunset .fm-fill{background:repeating-linear-gradient(90deg,#ff8fa3 0 8px,#ffb8c5 8px 16px)}
+.phase-day .floor-meter.critical .fm-fill,.phase-sunset .floor-meter.critical .fm-fill{background:repeating-linear-gradient(90deg,#ff5171 0 8px,#ff8f9f 8px 16px)}
+.phase-day .hero-sprite,.phase-sunset .hero-sprite{filter:none}
+/* 밝은 하늘에서도 문구가 잘 보이게 남색 테두리 */
+.feedback{text-shadow:2px 0 0 #29254f,-2px 0 0 #29254f,0 2px 0 #29254f,0 -2px 0 #29254f}
+.game-screen{background:#8bd9df}
