@@ -11,10 +11,11 @@ const BASE_WORDS=[
 ['finish','끝내다|마치다'],['open','열다'],['close','닫다'],['new','새로운'],['old','오래된|늙은'],['young','젊은|어린'],['easy','쉬운'],['difficult','어려운'],['important','중요한'],['different','다른']
 ].map(([en,ko],i)=>({id:i,en,answers:ko.split('|'),ko,type:'basic'}));
 function rankWord(w){const n=w.en.length;if(w.type==='basic')return n<=5?'elementary':n<=7?'middle':'high';if(['root','irregular'].includes(w.type))return'advanced';if(w.type==='phrase')return n<=8?'high':n<=10?'intermediate':'advanced';if(['prefix','suffix'].includes(w.type))return n<=5?'high':'intermediate';return n<=5?'middle':n<=7?'high':n<=9?'intermediate':'advanced'}
-const WORDS=[...BASE_WORDS,...EXTRA_WORDS].map((w,i)=>({...w,id:i,answers:w.answers||w.ko.split('|'),difficulty:rankWord(w)}));
+// 단어 합치기 (같은 영어 단어는 한 번만). 추가 단어(vocab-more.js)는 정해둔 단계를 그대로 씀
+const WORDS=(()=>{const seen=new Set();return[...BASE_WORDS,...EXTRA_WORDS,...(typeof MORE_WORDS!=='undefined'?MORE_WORDS:[])].filter(w=>{const k=w.en.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})})().map((w,i)=>({...w,id:i,answers:w.answers||w.ko.split('|'),difficulty:w.tier||rankWord(w)}));
 const EASY_WORDS=WORDS.filter(w=>w.difficulty==='elementary');
 const DIFFICULTY={elementary:{label:'초등',speed:24,interval:2.55},middle:{label:'중등',speed:28,interval:2.35},high:{label:'고등',speed:32,interval:2.15},intermediate:{label:'중급',speed:37,interval:1.95},advanced:{label:'고급',speed:42,interval:1.75}};
-const TYPE_LABEL={basic:'기본',noun:'명사',verb:'동사',adj:'형용사',adv:'부사',phrase:'표현',prefix:'접두사',suffix:'접미사',root:'어근',irregular:'불규칙'};
+const TYPE_LABEL={basic:'기본',more:'단어',noun:'명사',verb:'동사',adj:'형용사',adv:'부사',phrase:'표현',prefix:'접두사',suffix:'접미사',root:'어근',irregular:'불규칙'};
 
 const $=s=>document.querySelector(s);const screens=['startScreen','gameScreen','resultScreen'];
 const els={start:$('#startBtn'),retry:$('#retryBtn'),save:$('#saveImageBtn'),home:$('#homeBtn'),pause:$('#pauseBtn'),resume:$('#resumeBtn'),quit:$('#quitBtn'),modal:$('#pauseModal'),field:$('#playfield'),layer:$('#wordLayer'),form:$('#answerForm'),input:$('#answer'),score:$('#score'),combo:$('#combo'),level:$('#level'),levelGauge:$('#levelGauge'),gaugeValue:$('#gaugeValue'),feedback:$('#feedback'),comboBurst:$('#comboBurst'),levelUp:$('#levelUp'),resultBadge:$('#resultBadge'),ground:$('.ground'),deadline:$('.dead-line')};
@@ -80,7 +81,7 @@ function isLandscape(){if(!matchMedia('(pointer:coarse)').matches)return false;c
 function checkOrientation(){const land=isLandscape();document.documentElement.classList.toggle('landscape',land);if(land&&state?.running&&!state.paused&&!state.ending)pause()}
 screen.orientation?.addEventListener?.('change',checkOrientation);window.addEventListener('orientationchange',checkOrientation);window.addEventListener('resize',checkOrientation);checkOrientation();
 function lockPortrait(){try{screen.orientation?.lock?.('portrait').catch(()=>{})}catch(e){}}
-$('#vocabCount').textContent=WORDS.length;document.querySelectorAll('.mode-chip').forEach(btn=>btn.onclick=()=>{sfx.unlock();sfx.click();selectedMode=btn.dataset.mode;document.querySelectorAll('.mode-chip').forEach(b=>b.classList.toggle('active',b===btn));$('#vocabCount').textContent=getPool().length});
+document.querySelectorAll('.mode-chip').forEach(btn=>btn.onclick=()=>{sfx.unlock();sfx.click();selectedMode=btn.dataset.mode;document.querySelectorAll('.mode-chip').forEach(b=>b.classList.toggle('active',b===btn));void 0});
 // 게임 중에는 키보드가 계속 켜져 있게: 입력창 선택이 풀리지 않도록 막고, 풀리면 다음 터치 때 바로 되돌림
 // (브라우저는 사용자가 터치한 순간에만 키보드를 띄울 수 있어서, 터치 이벤트 안에서 다시 선택함)
 function typingActive(){return !!state?.running&&!state.paused&&!state.ending&&$('#gameScreen').classList.contains('active')}
@@ -129,7 +130,7 @@ document.addEventListener('pointerdown',()=>sfx.unlock(),{once:true});
 // 서버(/api/scores)에 연결되면 모두가 같은 순위를 보고, 연결이 안 되면 이 기기에 저장된 순위를 보여줌. 매일 한국 시간 자정에 초기화
 var hiscore=(()=>{const API='/api/scores',TOP_N=10,RANK_LABEL=['1ST','2ND','3RD','4TH','5TH','6TH','7TH','8TH','9TH','10TH'];
 const MODE_SHORT={elementary:'초',middle:'중',high:'고',intermediate:'중급',advanced:'고급'};
-const panel=$('#hiscore'),list=$('#hsList'),dateEl=$('#hsDate'),noteEl=$('#hsNote'),startScreen=$('#startScreen'),card=$('.start-card');
+const panel=$('#hiscore'),list=$('#hsList'),dateEl=$('#hsDate'),noteEl=$('#hsNote');
 const form=$('#nameEntry'),input=$('#neInput'),btn=$('#neBtn'),rankEl=$('#neRank'),msg=$('#neMsg');
 let board=[],online=false,lastId=null,pending=null;try{lastId=localStorage.getItem('wordRainLastId')}catch(e){}
 function today(){return new Date(Date.now()+9*3600e3).toISOString().slice(0,10)}
@@ -139,14 +140,14 @@ function localLoad(){try{const d=JSON.parse(localStorage.getItem('wordRainDaily'
 function localSave(entry){const scores=[...localLoad(),entry].sort((a,b)=>b.score-a.score||a.t-b.t).slice(0,30);try{localStorage.setItem('wordRainDaily',JSON.stringify({date:today(),scores}))}catch(e){}return{rank:scores.findIndex(s=>s.id===entry.id)+1,scores:scores.slice(0,TOP_N)}}
 async function fetchBoard(){try{const r=await fetch(API,{cache:'no-store'});if(!r.ok)throw 0;const d=await r.json();online=true;return d.scores||[]}catch(e){online=false;return localLoad().slice(0,TOP_N)}}
 function render(){const[,m,d]=today().split('-');dateEl.textContent=`${Number(m)}월 ${Number(d)}일`;noteEl.textContent=online?'':' · 이 기기 기록';list.innerHTML='';for(let i=0;i<TOP_N;i++){const s=board[i],li=document.createElement('li');li.className='rank-'+(i+1)+(s&&s.id&&s.id===lastId?' me':'');const a=document.createElement('span'),b=document.createElement('b'),c=document.createElement('span');a.textContent=RANK_LABEL[i];b.textContent=s?Number(s.score).toLocaleString():'-----';c.textContent=s?s.name:'---';li.append(a,b,c);if(s&&s.mode){const t=document.createElement('small');t.textContent=MODE_SHORT[s.mode]||'';li.appendChild(t)}list.appendChild(li)}}
-// 순위표 영역 크기를 로고 영역(시작 카드 위쪽)에 맞춤
-function fit(){panel.style.height=Math.max(160,card.offsetTop-8)+'px'}
-// 오락실 대기 화면처럼 로고와 순위표가 번갈아 나옴 (로고 4초, 순위표 7초). 누르면 바로 넘김
-let timer=null,showing=false;function setMode(rank){showing=rank;startScreen.classList.toggle('show-rank',rank);if(rank)fit();clearTimeout(timer);timer=setTimeout(()=>{if(startScreen.classList.contains('active'))setMode(!showing);else timer=null},rank?7000:4000)}
-panel.addEventListener('click',()=>{sfx.click();setMode(false)});
-['.hero-art','.start-copy'].forEach(sel=>$(sel)?.addEventListener('click',()=>{sfx.click();setMode(true)}));
-window.addEventListener('resize',()=>{if(showing)fit()});
-async function refresh(){board=await fetchBoard();render();if(!timer)setMode(false)}
+// 순위표 시트: '오늘의 순위' 버튼을 누르면 아래에서 올라오고, 닫기/바깥 누르기/아래로 밀기로 닫힘
+const app=$('.app'),backdrop=$('#hsBackdrop');
+function openSheet(){sfx.click();board.length||render();app.classList.add('rank-open');refresh()}
+function closeSheet(){if(!app.classList.contains('rank-open'))return;sfx.click();app.classList.remove('rank-open')}
+$('#rankOpen').addEventListener('click',openSheet);$('#hsClose').addEventListener('click',closeSheet);backdrop.addEventListener('click',closeSheet);
+let sy=null;panel.addEventListener('touchstart',e=>{sy=e.touches[0].clientY},{passive:true});panel.addEventListener('touchend',e=>{if(sy!==null&&e.changedTouches[0].clientY-sy>60)closeSheet();sy=null});
+els.start.addEventListener('click',()=>app.classList.remove('rank-open'));
+async function refresh(){board=await fetchBoard();render()}
 // 게임이 끝나면 오늘 10위 안에 들었을 때만 이름 입력
 async function onGameEnd(score,mode){form.hidden=true;msg.textContent='';pending=null;if(!(score>0))return;board=await fetchBoard();const pos=board.filter(s=>s.score>=score).length;if(pos>=TOP_N)return;pending={score,mode};rankEl.textContent=`오늘 ${RANK_LABEL[pos]} 기록이에요!`;let last='';try{last=localStorage.getItem('wordRainName')||''}catch(e){}input.value=last;input.disabled=false;btn.disabled=false;btn.textContent='OK';form.hidden=false;sfx.levelUp()}
 // 이름은 영어 대문자, 숫자, 한글만 (한글 조합 중에는 건드리지 않음)

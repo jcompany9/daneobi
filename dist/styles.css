@@ -173,3 +173,13 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .ig-copy{display:block;width:100%;padding:12px;border:3px solid #29254f;background:#57d7d9;color:#29254f;font:inherit;font-size:14px;box-shadow:0 4px 0 #29254f}
 .ig-close{display:block;width:100%;margin-top:10px;padding:10px;border:0;background:transparent;color:#71818d;font:inherit;font-size:12px}
 .inapp-guide p{word-break:keep-all}
+/* ===== 오늘의 순위: 아래에서 올라오는 시트 ===== */
+.hiscore{display:flex;top:auto;bottom:0;height:min(82%,600px);z-index:30;visibility:hidden;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s .38s;border-bottom:0;border-top:4px solid #ffd84d;box-shadow:0 -6px 0 #0d0c21;padding:10px 20px calc(10px + env(safe-area-inset-bottom));cursor:default}
+.app.rank-open .hiscore{visibility:visible;transform:none;transition:transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s}
+.hs-backdrop{position:absolute;inset:0;z-index:29;background:#17152fb3;opacity:0;pointer-events:none;transition:opacity .3s}
+.app.rank-open .hs-backdrop{opacity:1;pointer-events:auto}
+.hs-handle{display:block;width:44px;height:5px;margin:0 0 12px;background:#4d477d}
+.hs-close{margin-top:8px;padding:8px 18px;border:0;background:transparent;color:#9e98d1;font:inherit;font-size:14px;cursor:pointer}
+.hero-art,.start-copy{cursor:default}
+.rank-btn{display:block;width:100%;margin-top:14px;padding:12px;border:3px solid #29254f;background:#201d49;color:#ffd84d;font:inherit;font-size:16px;box-shadow:0 5px 0 #29254f;cursor:pointer}
+.rank-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #29254f}
