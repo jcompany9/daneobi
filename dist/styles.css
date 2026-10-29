@@ -318,3 +318,7 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .pressure-meter,.kb-open .pressure-meter{right:52px}
 /* 순위표: 순위 · 점수 · 이름 세 칸 */
 .hs-head,.hs-list li{grid-template-columns:44px 1fr 56px}
+/* 레벨 업 문구: "LEVEL n"만 표시 */
+.level-up small,.level-up em{display:none}
+.level-up{width:auto;padding:14px 22px}
+.level-up b{margin:0}
