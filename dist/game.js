@@ -44,7 +44,7 @@ const LEVEL_TIME=30,COMBO_LEVEL=15,FLOOR_MAX=10,COMBO_FLOOR=10;
 function nextWord(){const cur=state.tier;let t=cur;if(cur>0&&Math.random()>=.4)t=Math.floor(Math.random()*cur);const key=TIERS[t];let d=state.decks[key];if(!d||!d.length){const onScreen=new Set(state.active.map(w=>w.en));d=state.decks[key]=WORDS.filter(w=>w.difficulty===key&&!onScreen.has(w.en)).sort(()=>Math.random()-.5)}return d.pop()||WORDS[Math.floor(Math.random()*WORDS.length)]}
 
 function reset(){state={score:0,combo:0,maxCombo:0,correct:0,missed:[],active:[],running:true,paused:false,ending:false,elapsed:0,level:1,levelTime:0,floor:0,groundRise:-1,riseFrac:0,tier:0,decks:{}};els.layer.innerHTML='';els.field.classList.remove('hit','ground-impact','deadline-hit','critical');els.field.style.setProperty('--ground-rise','0px');spawnClock=0;lastTime=performance.now();hero?.reset();applyGroundRise();applySky();updateHud()}
-function start(){sfx.unlock();sfx.start();lockPortrait();reset();show('gameScreen');spawn();els.input.value='';setTimeout(()=>els.input.focus(),120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function start(){sfx.unlock();sfx.start();lockPortrait();reset();show('gameScreen');spawn();els.input.value='';els.input.focus({preventScroll:true});setTimeout(()=>{if(document.activeElement!==els.input)els.input.focus()},120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
 function spawn(){const word=nextWord(),node=document.createElement('div');node.className='word';node.textContent=word.en;els.layer.appendChild(node);const {lane,x}=pickLane(node.offsetWidth),base=DIFFICULTY[selectedMode].speed;const item={...word,node,x,lane,p:0,speed:base+Math.random()*7};state.active.push(item);node.style.transform=`translate(${x}px,${TOP}px)`}
 function showLevelUp(title,sub){sfx.levelUp();els.levelUp.querySelector('small').textContent=title||'LEVEL UP';els.levelUp.querySelector('span').textContent=state.level;els.levelUp.querySelector('em').textContent=sub||'';els.levelUp.classList.remove('show');void els.levelUp.offsetWidth;els.levelUp.classList.add('show');navigator.vibrate?.([25,35,55])}
 // 바닥: 실수(단어 놓침, 카드 파괴)할 때마다 한 칸씩 올라옴. FLOOR_MAX번 실수하면 DEAD LINE에 닿아 게임 끝
@@ -112,7 +112,10 @@ function keepTyping(){if(typingActive()&&document.activeElement!==els.input)els.
 const answerBtn=$('#answerBtn');
 // ↵ 버튼: 누를 때 선택이 버튼으로 넘어가지 않게 하고 직접 제출
 answerBtn.addEventListener('mousedown',e=>e.preventDefault());
-answerBtn.addEventListener('touchend',e=>{e.preventDefault();if(els.form.requestSubmit)els.form.requestSubmit();else answer(new Event('submit'))});
+answerBtn.addEventListener('touchend',e=>{e.preventDefault();answer(e);keepTyping()});
+// 아이폰: 키보드의 엔터(return)로 form이 제출되면 사파리가 키보드를 내려버림.
+// 엔터는 form 제출을 막고 직접 처리 (한글 조합이 끝난 뒤 값을 읽도록 한 박자 늦게 처리)
+els.input.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.keyCode!==13)return;e.preventDefault();setTimeout(()=>answer({preventDefault(){}}),0)});
 // 게임 화면의 빈 곳이나 단어를 눌러도 입력창 선택 유지 (버튼은 원래대로 동작)
 const gameScreen=$('#gameScreen');
 gameScreen.addEventListener('mousedown',e=>{if(typingActive()&&!e.target.closest('button,input'))e.preventDefault()});
