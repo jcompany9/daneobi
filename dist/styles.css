@@ -216,3 +216,32 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .ne-modal .name-entry{position:relative;width:min(100%,320px);margin:0;padding:26px 16px 16px}
 .ne-x{position:absolute;top:6px;right:6px;width:32px;height:32px;padding:0;border:2px solid #9e98d1;background:transparent;color:#fff7dc;font:inherit;font-size:16px;line-height:1;cursor:pointer}
 .ne-x:active{background:#ffffff22}
+/* ===== 바닥 위 도트 캐릭터 (검은색 사람) ===== */
+.hero{position:absolute;bottom:100%;left:0;width:30px;height:48px;margin-bottom:-1px;z-index:5;pointer-events:none}
+.hero-sprite{position:relative;width:30px;height:48px;transform-origin:50% 100%;filter:drop-shadow(1px 0 0 #fff7dc) drop-shadow(-1px 0 0 #fff7dc) drop-shadow(0 -1px 0 #fff7dc)}
+.hero-sprite>div{position:absolute;inset:0}
+.hero .f2,.hero .f3{display:none}
+.hero.step .f1{display:none}.hero.step .f2{display:block}
+/* 만세 자세: 정답(jump), 춤(dance는 걷기 프레임과 번갈아) */
+.hero.jump .f1,.hero.jump .f2,.hero.dance:not(.step) .f1,.hero.dance:not(.step) .f2{display:none}
+.hero.jump .f3,.hero.dance:not(.step) .f3{display:block}
+.hero.dance.step .f1{display:block}.hero.dance.step .f2{display:none}
+.hero.left .hero-sprite{transform:scaleX(-1)}
+.hero.jump .hero-sprite{animation:heroJump .38s steps(6)}
+.hero.oops .hero-sprite,.hero.relief .hero-sprite{animation:heroJump .32s steps(4)}
+.hero.dance .hero-sprite{animation:heroDance .45s steps(2) infinite}
+.hero.bonk .hero-sprite{animation:heroBonk 1s steps(10)}
+.hero.flat .hero-sprite{animation:none;scale:1.5 .28}
+@keyframes heroJump{50%{translate:0 -20px}}
+@keyframes heroDance{0%{rotate:-10deg;translate:0 -3px}100%{rotate:10deg;translate:0 0}}
+@keyframes heroBonk{0%{scale:1.3 .6}15%{scale:.85 1.15}30%{scale:1;rotate:-12deg}50%{rotate:10deg}70%{rotate:-6deg}90%{rotate:3deg}100%{rotate:0}}
+/* 머리 위 별, 땀, 말풍선 */
+.hero-stars{display:none;position:absolute;left:50%;top:-8px;translate:-50% 0;color:#ffd84d;font-size:10px;font-style:normal;white-space:nowrap;text-shadow:1px 1px 0 #29254f;animation:heroStars .5s steps(3) infinite}
+.hero.bonk .hero-stars{display:block}
+@keyframes heroStars{50%{translate:-50% -3px;opacity:.5}}
+.hero-sweat{display:none;position:absolute;right:-3px;top:4px;width:4px;height:6px;background:#57d7d9;box-shadow:1px 1px 0 #29254f;animation:heroSweat .6s steps(3) infinite}
+.hero.panic .hero-sweat{display:block}
+@keyframes heroSweat{0%{translate:0 0;opacity:1}100%{translate:4px 10px;opacity:0}}
+.hero-bubble{position:absolute;bottom:100%;left:50%;translate:-50% -6px;padding:3px 7px;background:#fff7dc;color:#29254f;border:2px solid #29254f;font-size:12px;font-style:normal;white-space:nowrap;opacity:0;pointer-events:none}
+.hero-bubble.show{animation:heroBubble 1s steps(6) forwards}
+@keyframes heroBubble{0%{opacity:0;translate:-50% 0}15%,80%{opacity:1;translate:-50% -8px}100%{opacity:0;translate:-50% -12px}}
