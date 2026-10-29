@@ -39,3 +39,29 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 
 /* Deadline game-over rule */
 .hud .lives{display:none}.dead-line{position:absolute;z-index:3;top:96px;left:0;right:0;display:flex;align-items:center;gap:7px;color:#ff6685;text-shadow:2px 2px 0 #17152f;opacity:.9}.dead-line span{height:4px;flex:1;background:repeating-linear-gradient(90deg,#ff5171 0 12px,transparent 12px 20px);filter:drop-shadow(0 2px 0 #17152f)}.dead-line b{font-size:8px;letter-spacing:.08em;white-space:nowrap}.playfield.deadline-hit .dead-line{animation:deadlineAlarm .2s steps(2) infinite}.playfield.deadline-hit:after{content:"GAME OVER";position:absolute;z-index:12;inset:0;display:grid;place-items:center;background:#ff517144;color:#fff7dc;font-size:32px;text-shadow:4px 4px 0 #29254f;animation:deadlineScreen .25s steps(2) infinite;pointer-events:none}.playfield.deadline-hit .ground{box-shadow:0 -8px 0 #ff5171,0 -16px 0 #ffd84d}@keyframes deadlineAlarm{50%{opacity:.25;filter:brightness(2)}}@keyframes deadlineScreen{50%{background:#ffd84d44;color:#ff5171}}
+
+/* ===== 모바일 개선 ===== */
+/* 아이폰에서 키보드가 열릴 때 화면이 위로 밀려도 게임 화면이 보이는 영역에 붙어 있게 */
+@media(max-width:599px){html,body{overscroll-behavior:none}.app{position:fixed;left:0;right:0;top:var(--app-top,0px)}}
+.start-screen{overflow:auto}
+/* 작은 화면 모드: 키보드가 열려 있으면 점수판, 데드라인, 바닥, 입력창을 얇게 해서 단어가 떨어지는 공간을 넓힘 */
+.kb-open .hud{height:auto;padding:calc(5px + env(safe-area-inset-top)) 12px 21px;align-items:center;gap:10px}
+.kb-open .icon-btn{width:32px;height:32px}
+.kb-open .hud .stat{display:flex;align-items:baseline;gap:4px}
+.kb-open .hud .stat b{font-size:14px;line-height:1.2}
+.kb-open .pressure-meter{bottom:5px;height:12px}
+.kb-open .dead-line{top:30px}
+.kb-open .ground{height:18px;border-top-width:4px}
+.kb-open .ground:before,.kb-open .ground span{display:none}
+.kb-open .answer-bar{padding:7px 12px;grid-template-columns:1fr 46px;gap:7px}
+.kb-open .answer-bar input{height:42px}
+.kb-open .level-up{top:46%;padding:12px}
+.kb-open .feedback{top:40%}
+/* 가로 화면 막기 */
+.rotate-notice{display:none;position:fixed;inset:0;z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#201d49;color:#fff7dc}
+.rotate-notice b{font-size:18px;color:#ffd84d;text-shadow:2px 2px 0 #0d0c21}
+.rotate-notice small{font-size:11px;color:#9e98d1}
+.rotate-notice span{font-size:44px;display:inline-block;animation:rotateHint 1.6s steps(4) infinite}
+.landscape .rotate-notice{display:flex}
+.landscape .app{visibility:hidden}
+@keyframes rotateHint{0%,30%{transform:rotate(-90deg)}60%,100%{transform:rotate(0)}}
