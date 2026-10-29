@@ -82,3 +82,12 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 .image-modal img{display:block;width:100%;height:auto;max-height:58vh;object-fit:contain;border:3px solid #29254f;-webkit-touch-callout:default;user-select:auto}
 .image-modal .ext-btn{display:block;text-align:center;text-decoration:none;font-size:13px;padding:12px}
 .image-modal .text-btn{padding:8px 16px}
+/* ===== 단어 카드 금 / 파괴 ===== */
+.word.crack-1:after,.word.crack-2:after{content:"";position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:100% 100%}
+.word.crack-1:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M34 0 L40 10 L33 18 L42 27 L37 40' fill='none' stroke='%2329254f' stroke-width='2.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.word.crack-2:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M34 0 L40 10 L33 18 L42 27 L37 40 M40 10 L52 14 M33 18 L22 24 L14 22 M70 0 L64 12 L72 21 L63 31 L68 40 M64 12 L80 17 L92 13' fill='none' stroke='%2329254f' stroke-width='2.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.word.crack-2{border-color:#ff8f78}
+.word.cracking{animation:crackShake .24s steps(4)}
+.word.shard{pointer-events:none;margin:0;animation:shardFall var(--fall,.4s) cubic-bezier(.5,0,1,1) forwards}
+@keyframes crackShake{25%{rotate:-5deg;scale:1.06}50%{rotate:4deg}75%{rotate:-2deg}}
+@keyframes shardFall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:.9}}
