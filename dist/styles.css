@@ -297,3 +297,16 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .word.crack-1:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 9 L6 14 L3 21 L9 26 M100 31 L94 27 L97 21' fill='none' stroke='%2329254f' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
 .word.crack-2:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 9 L6 14 L3 21 L9 26 M100 31 L94 27 L97 21 L92 16 M100 6 L95 9 M70 0 L68 5 L73 8 M28 40 L31 35 L26 32 M0 33 L5 31' fill='none' stroke='%2329254f' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
 .spark.chip{width:4px;height:4px;box-shadow:1px 1px 0 #17152f;animation:spark .45s steps(5) forwards}
+/* ===== 오른쪽 칸 천장: 바닥이 여기에 닿으면 게임 오버 ===== */
+.floor-meter .fm-dead{top:0;left:0;right:0;height:14px;padding:0;border:0;border-bottom:3px solid #0d0c21;background:repeating-linear-gradient(135deg,#ff5171 0 5px,#29254f 5px 10px);box-shadow:0 3px 0 #ff517155;font-size:0;color:transparent}
+.floor-meter .fm-dead:after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:4px;background:repeating-linear-gradient(90deg,#0d0c21 0 3px,transparent 3px 6px)}
+.floor-meter.critical .fm-dead{animation:ceilingAlarm .4s steps(2) infinite}
+@keyframes ceilingAlarm{50%{filter:brightness(1.6)}}
+/* 천장 밀기 자세 */
+.hero .f4{display:none}
+.hero.push .f1,.hero.push .f2,.hero.push .f3{display:none}
+.hero.push .f4{display:block}
+.hero.push .hero-sprite{scale:1 var(--push,1);animation:heroPush .3s steps(2) infinite}
+.hero.push.flinch .hero-sprite{animation:heroFlinch .36s steps(6)}
+@keyframes heroPush{0%{translate:-1px 0}100%{translate:1px 0}}
+.hero.push .hero-sweat{display:block}

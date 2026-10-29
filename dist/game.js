@@ -174,30 +174,34 @@ $('#neClose').addEventListener('click',()=>{sfx.click();input.blur();neModal.hid
 refresh();return{refresh,onGameEnd}})();
 // ===== 바닥에 사는 도트 캐릭터: 검은색 사람 =====
 // 바닥 위를 걸어 다니다가 단어에 맞으면 "띠용!", 정답이면 만세하며 폴짝, 10콤보 이상이면 춤, 바닥이 높아지면 땀 흘리며 허둥지둥
-var hero=(()=>{const PAL={K:'#0b0a12',W:'#fff7dc'};
+var hero=(()=>{const CEIL_H=14;const PAL={K:'#0b0a12',W:'#fff7dc'};
 // 11x16 막대 인간 (동그란 머리 + 막대 팔다리). 걷기 2프레임 + 만세
 const HEAD=['....KKK....','...KKKKK...','...KKKKK...','....KKK....'];
 const LEGS_WIDE=['.....K.....','....K.K....','...K...K...','..K.....K..','.K.......K.','KK.......KK'];
 const WALK_A=[...HEAD,'.....K.....','....KKK....','...K.K.K...','..K..K..K..','.K...K...K.',...LEGS_WIDE];
 const WALK_B=[...HEAD,'.....K.....','.....K.....','....KKK....','...K.K.K...','...K.K.K...','.....K.....','.....K.....','....K.K....','....K.K....','...K...K...','..KK...KK..'];
+// 천장 밀기: 쪼그려 앉아 두 팔을 위로
+const PUSH=['..K.....K..','..K.....K..','.K..KKK..K.','.K.KKKKK.K.','.K.KKKKK.K.','..K.KKK.K..','...K.K.K...','....KKK....','.....K.....','.....K.....','....K.K....','...K...K...','..K.....K..','...K...K...','...K...K...','..KK...KK..'];
 const CHEER=['....KKK....','.K.KKKKK.K.','.K.KKKKK.K.','..K.KKK.K..','...K.K.K...','....KKK....','.....K.....','.....K.....','.....K.....','.....K.....',...LEGS_WIDE];
 function svg(rows){let r='';rows.forEach((row,y)=>[...row].forEach((c,x)=>{if(PAL[c])r+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PAL[c]}"/>`}));return`<svg viewBox="0 0 11 16" width="22" height="32" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
 const el=document.createElement('div');el.className='hero';el.setAttribute('aria-hidden','true');
-el.innerHTML=`<em class="hero-bubble"></em><div class="hero-sprite"><div class="f1">${svg(WALK_A)}</div><div class="f2">${svg(WALK_B)}</div><div class="f3">${svg(CHEER)}</div></div><i class="hero-stars">★ ★</i><i class="hero-sweat"></i><i class="hero-alert">!!</i>`;
+el.innerHTML=`<em class="hero-bubble"></em><div class="hero-sprite"><div class="f1">${svg(WALK_A)}</div><div class="f2">${svg(WALK_B)}</div><div class="f3">${svg(CHEER)}</div><div class="f4">${svg(PUSH)}</div></div><i class="hero-stars">★ ★</i><i class="hero-sweat"></i><i class="hero-alert">!!</i>`;
 meterFill.appendChild(el);const bubble=el.querySelector('.hero-bubble');
 let x=60,dir=1,t=0,stun=0,timer=null;
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function play(cls,ms){el.classList.remove('jump','bonk','oops','relief','freak','flinch');void el.offsetWidth;el.classList.add(cls);clearTimeout(timer);timer=setTimeout(()=>el.classList.remove(cls),ms)}
 function say(text){bubble.textContent=text;bubble.classList.remove('show');void bubble.offsetWidth;bubble.classList.add('show')}
 function reset(){stun=0;el.className='hero';el.style.display='';bubble.classList.remove('show')}
-function tick(dt){const panic=state.floor>=FLOOR_MAX-3;stun=Math.max(0,stun-dt);t+=dt;
+// 오른쪽 칸에서 바닥 위 ~ 천장 아래까지 남은 공간(px)
+function headroom(){return meter.clientHeight*(1-state.riseFrac)-CEIL_H}
+function tick(dt){const panic=state.floor>=FLOOR_MAX-3,room=headroom(),push=room<40&&!state.ending;el.classList.toggle('push',push);if(push)el.style.setProperty('--push',Math.max(.5,Math.min(1,room/32)).toFixed(2));stun=Math.max(0,stun-dt);t+=dt;
  const flail=el.classList.contains('freak');el.classList.toggle('step',(panic||flail)&&Math.floor(t*(flail?14:9))%2===0);el.classList.toggle('panic',panic);el.classList.toggle('left',(panic||flail)&&Math.floor(t*(flail?7:3))%2===0);el.classList.toggle('dance',state.combo>=10&&stun===0)}
 // 산산조각: 졸라맨 자리에서 도트 조각이 사방으로 튐
 function shatterHero(){const fr=els.field.getBoundingClientRect(),r=el.getBoundingClientRect(),cx=r.left-fr.left+r.width/2,cy=r.top-fr.top+r.height/2;for(let k=0;k<18;k++){const p=document.createElement('i');p.className='spark';const a=Math.random()*Math.PI*2,d=30+Math.random()*90;p.style.left=(cx+(Math.random()-.5)*20)+'px';p.style.top=(cy+(Math.random()-.5)*30)+'px';p.style.background=k%4?'#0b0a12':'#fff7dc';p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',Math.sin(a)*d+'px');els.layer.appendChild(p);setTimeout(()=>p.remove(),600)}el.style.display='none'}
 return{reset,tick,
  correct(){play('jump',380);if(state.combo>0&&state.combo%10===0)say(pick(['신난다!','최고야!','계속 가자!']))},
  // 바닥이 올라올 때마다 당황
- panic(){stun=.9;play('freak',900);say(state.floor>=FLOOR_MAX-3?pick(['살려줘!','안돼애!','으아아']):pick(['으악!','헉!','앗!']))},
+ panic(){if(headroom()<40){play('flinch',360);say(pick(['끄응…!','무거워!','버텨!']));return}stun=.9;play('freak',900);say(state.floor>=FLOOR_MAX-3?pick(['살려줘!','안돼애!','으아아']):pick(['으악!','헉!','앗!']))},
  relief(){play('relief',600);say('휴~')},
  // 오답(카드에 금): 움찔
  flinch(){if(!el.classList.contains('freak'))play('flinch',360)},
