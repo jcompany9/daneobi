@@ -128,3 +128,15 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 .ne-row input:disabled{opacity:.6}
 .ne-row button{width:60px;border:3px solid #29254f;background:#ffd84d;color:#29254f;font-size:14px;box-shadow:3px 3px 0 #ff6685}
 .ne-msg{margin:8px 0 0;min-height:1em;font-size:11px;color:#ffd84d}
+/* ===== 게임 화면 상단 최소화: 한 줄 점수판 + 얇은 위험 게이지, DEAD LINE도 위로 ===== */
+.hud{height:auto;min-height:0;padding:calc(6px + env(safe-area-inset-top)) 12px 17px;align-items:center;gap:12px}
+.hud .icon-btn{width:34px;height:34px;font-size:12px}
+.hud .stat small{font-size:7px;line-height:1.1}
+.hud .stat b{font-size:15px;line-height:1.25}
+.hud .tier b{color:#ffd84d}
+.pressure-meter{bottom:4px;height:10px;left:12px;right:12px;grid-template-columns:40px 1fr 28px}
+.pressure-meter>i{height:6px;border-width:1px}
+.dead-line{top:40px}
+.kb-open .hud{padding:calc(4px + env(safe-area-inset-top)) 10px 16px}
+.kb-open .dead-line{top:26px}
+@media(max-width:360px){.hud{gap:8px;padding-left:8px;padding-right:8px}.hud .stat b{font-size:13px}}

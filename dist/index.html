@@ -27,12 +27,8 @@
         <p class="hs-tap">TAP TO SWITCH</p>
       </div>
       <div class="start-card">
-        <div class="feature-row"><span id="vocabCount">300</span><p><b>혼합 영어 어휘</b><small>단어·표현·접사·어근</small></p></div>
+        <div class="feature-row"><span id="vocabCount">300</span><p><b>혼합 영어 어휘</b><small>시간이 지날수록 어려운 단어가 나와요</small></p></div>
         <div class="feature-row"><span>▲</span><p><b>다가오는 바닥선</b><small>DEAD LINE에 닿으면 게임 오버</small></p></div>
-        <div class="mode-title">SELECT LEVEL</div>
-        <div id="modePicker" class="mode-picker difficulty-picker" aria-label="시작 난이도">
-          <button class="mode-chip active" data-mode="elementary"><b>초등</b></button><button class="mode-chip" data-mode="middle"><b>중등</b></button><button class="mode-chip" data-mode="high"><b>고등</b></button><button class="mode-chip" data-mode="intermediate"><b>중급</b></button><button class="mode-chip" data-mode="advanced"><b>고급</b></button>
-        </div>
         <button id="startBtn" class="primary">게임 시작 <span>→</span></button>
         <button class="text-btn sound-toggle sound-text">소리 켜짐 ♪</button>
         <p class="best">최고 기록 <b id="bestStart">0</b>점</p>
@@ -43,6 +39,7 @@
       <header class="hud">
         <button id="pauseBtn" class="icon-btn" aria-label="일시정지">Ⅱ</button>
         <div class="stat level"><small>LEVEL</small><b id="level">1</b></div>
+        <div class="stat tier"><small>WORD</small><b id="tierLabel">초등</b></div>
         <div class="stat"><small>SCORE</small><b id="score">0</b></div>
         <button class="icon-btn sound-toggle" aria-label="소리 끄기">♪</button>
         <div class="stat combo"><small>COMBO</small><b>×<span id="combo">0</span></b></div>
