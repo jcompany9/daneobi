@@ -43,7 +43,7 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 /* ===== 모바일 개선 ===== */
 /* 아이폰에서 키보드가 열릴 때 화면이 위로 밀려도 게임 화면이 보이는 영역에 붙어 있게 */
 @media(max-width:599px){html,body{overscroll-behavior:none}.app{position:fixed;left:0;right:0;top:var(--app-top,0px)}}
-.start-screen{overflow:auto}
+.start-screen{overflow-x:hidden;overflow-y:auto}
 /* 작은 화면 모드: 키보드가 열려 있으면 점수판, 데드라인, 바닥, 입력창을 얇게 해서 단어가 떨어지는 공간을 넓힘 */
 .kb-open .hud{height:auto;padding:calc(5px + env(safe-area-inset-top)) 12px 21px;align-items:center;gap:10px}
 .kb-open .icon-btn{width:32px;height:32px}
@@ -91,3 +91,9 @@ html,body,button,input{font-family:"GalmuriPixel","Courier New",monospace;-webki
 .word.shard{pointer-events:none;margin:0;animation:shardFall var(--fall,.4s) cubic-bezier(.5,0,1,1) forwards}
 @keyframes crackShake{25%{rotate:-5deg;scale:1.06}50%{rotate:4deg}75%{rotate:-2deg}}
 @keyframes shardFall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:.9}}
+/* ===== 소리 켜기/끄기 ===== */
+.hud .sound-toggle{order:10;margin-left:auto;font-size:16px}
+.hud .sound-toggle.off{color:#9e98d1;opacity:.7}
+.start-card .sound-toggle{display:block;margin:8px auto 0;padding:6px 12px;font-size:11px}
+.start-card .sound-toggle.off{opacity:.6}
+.kb-open .hud .sound-toggle{font-size:13px}
