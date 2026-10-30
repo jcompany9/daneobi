@@ -1,29 +1,23 @@
-const BASE_WORDS=[
-['apple','사과'],['book','책'],['water','물'],['house','집'],['friend','친구'],['school','학교'],['family','가족'],['morning','아침'],['night','밤'],['food','음식'],
-['love','사랑'],['happy','행복한|기쁜'],['sad','슬픈'],['big','큰'],['small','작은'],['good','좋은'],['bad','나쁜'],['fast','빠른'],['slow','느린'],['beautiful','아름다운|예쁜'],
-['sky','하늘'],['sun','태양|해'],['moon','달'],['star','별'],['rain','비'],['snow','눈'],['wind','바람'],['tree','나무'],['flower','꽃'],['river','강'],
-['sea','바다'],['mountain','산'],['animal','동물'],['dog','개|강아지'],['cat','고양이'],['bird','새'],['fish','물고기'],['time','시간'],['day','날|하루'],['week','주|일주일'],
-['year','년|해'],['today','오늘'],['tomorrow','내일'],['yesterday','어제'],['people','사람들'],['child','아이|어린이'],['mother','어머니|엄마'],['father','아버지|아빠'],['brother','형제|남자형제'],['sister','자매|여자형제'],
-['name','이름'],['place','장소'],['world','세계'],['country','나라|국가'],['city','도시'],['street','거리|길'],['room','방'],['door','문'],['window','창문'],['table','탁자|식탁'],
-['chair','의자'],['phone','전화기|휴대폰'],['computer','컴퓨터'],['picture','그림|사진'],['music','음악'],['song','노래'],['game','게임'],['work','일|일하다'],['study','공부|공부하다'],['learn','배우다'],
-['read','읽다'],['write','쓰다'],['speak','말하다'],['listen','듣다'],['look','보다|바라보다'],['walk','걷다'],['run','달리다'],['eat','먹다'],['drink','마시다'],['sleep','자다'],
-['make','만들다'],['take','가지고가다|취하다'],['give','주다'],['find','찾다'],['know','알다'],['think','생각하다'],['want','원하다'],['need','필요하다'],['help','돕다|도움'],['start','시작하다'],
-['finish','끝내다|마치다'],['open','열다'],['close','닫다'],['new','새로운'],['old','오래된|늙은'],['young','젊은|어린'],['easy','쉬운'],['difficult','어려운'],['important','중요한'],['different','다른']
-].map(([en,ko],i)=>({id:i,en,answers:ko.split('|'),ko,type:'basic'}));
-function rankWord(w){const n=w.en.length;if(w.type==='basic')return n<=5?'elementary':n<=7?'middle':'high';if(['root','irregular'].includes(w.type))return'advanced';if(w.type==='phrase')return n<=8?'high':n<=10?'intermediate':'advanced';if(['prefix','suffix'].includes(w.type))return n<=5?'high':'intermediate';return n<=5?'middle':n<=7?'high':n<=9?'intermediate':'advanced'}
-// 단어 합치기 (같은 영어 단어는 한 번만). 추가 단어(vocab-more.js)는 정해둔 단계를 그대로 씀
-const WORDS=(()=>{const seen=new Set();return[...BASE_WORDS,...EXTRA_WORDS,...(typeof MORE_WORDS!=='undefined'?MORE_WORDS:[])].filter(w=>{const k=w.en.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})})().map((w,i)=>({...w,id:i,answers:w.answers||w.ko.split('|'),difficulty:w.tier||rankWord(w)}));
+// 단어 합치기: dist/words/ 의 단어 파일들(core.js, e.js, m.js, h.js, i.js, a.js)이 addWords([...])로 WORD_DATA에 넣은 것.
+// 한 항목 = ['영어', '인정 뜻들(|로 구분)', 단계 글자 e·m·h·i·a]. 같은 영어 단어는 먼저 나온 것만 씀 (core.js가 먼저)
+const WORDS=(()=>{const T={e:'elementary',m:'middle',h:'high',i:'intermediate',a:'advanced'},seen=new Set();
+  return WORD_DATA.filter(([en,,t])=>{const k=en.toLowerCase();if(seen.has(k)||!T[t])return false;seen.add(k);return true}).map(([en,ko,t],i)=>({id:i,en,ko,answers:ko.split('|'),difficulty:T[t],type:'word'}))})();
 const EASY_WORDS=WORDS.filter(w=>w.difficulty==='elementary');
 const DIFFICULTY={elementary:{label:'초등',speed:24,interval:2.55},middle:{label:'중등',speed:28,interval:2.35},high:{label:'고등',speed:32,interval:2.15},intermediate:{label:'중급',speed:37,interval:1.95},advanced:{label:'고급',speed:42,interval:1.75}};
 const TYPE_LABEL={basic:'기본',more:'단어',noun:'명사',verb:'동사',adj:'형용사',adv:'부사',phrase:'표현',prefix:'접두사',suffix:'접미사',root:'어근',irregular:'불규칙'};
 
 const $=s=>document.querySelector(s);const screens=['startScreen','gameScreen','resultScreen'];
 const els={start:$('#startBtn'),retry:$('#retryBtn'),save:$('#saveImageBtn'),share:$('#shareBtn'),home:$('#homeBtn'),pause:$('#pauseBtn'),resume:$('#resumeBtn'),quit:$('#quitBtn'),modal:$('#pauseModal'),field:$('#playfield'),layer:$('#wordLayer'),form:$('#answerForm'),input:$('#answer'),score:$('#score'),combo:$('#combo'),level:$('#level'),levelGauge:$('#levelGauge'),gaugeValue:$('#gaugeValue'),feedback:$('#feedback'),comboBurst:$('#comboBurst'),levelUp:$('#levelUp'),resultBadge:$('#resultBadge'),ground:$('.ground'),deadline:$('.dead-line')};
-let state,raf,lastTime,spawnClock,selectedMode='elementary',startTier=0;
+let state,raf,lastTime,spawnClock,selectedMode='elementary',startPick=0;
 // 단어는 화면 높이와 상관없이 같은 시간 동안 떨어짐 (p: 0=맨 위, 1=바닥). 키보드로 화면이 줄어도 단어가 한꺼번에 놓침 처리되지 않음
 const TOP=-52,FALL=400;
-// 시간이 지날수록 단어가 더 자주 나옴 (낙하 속도는 그대로)
-function spawnInterval(){return DIFFICULTY.elementary.interval*.85*Math.max(.7,1-(state.level-1)*.04)}
+// 레벨: 1~20까지 한 레벨마다 조금씩 어려워짐 (단어가 더 자주, 조금 더 빨리). Lv20부터는 난이도 그대로, 레벨 숫자와 점수 배율만 계속 오름
+const LEVEL_CAP=20;
+function hardLv(){return Math.min(state.level,LEVEL_CAP)-1}
+// 단어 나오는 간격: Lv1 약 2.2초 → Lv20 약 1.2초
+function spawnInterval(){return DIFFICULTY.elementary.interval*.85*Math.max(.55,1-hardLv()*.025)}
+// 떨어지는 속도: Lv1 기본 → Lv20 약 1.4배
+function fallBoost(){return 1+hardLv()*.02}
 // 바닥 높이도 화면 크기에 대한 비율로 기억했다가, 화면이 바뀌면 다시 계산
 
 // 바닥: 단어가 떨어지는 화면의 바닥이 직접 올라옴. 한 칸 = (처음 바닥 ~ DEAD LINE 거리)의 1/FLOOR_MAX
@@ -48,30 +42,33 @@ function maxWords(){const h=els.field.clientHeight;return h<280?3:h<400?4:5}
 function pickLane(wordW){const W=els.field.clientWidth-16,lanes=Math.max(2,Math.floor(W/100)),laneW=W/lanes;const busy=new Set(state.active.filter(w=>w.p<.4).map(w=>w.lane));const all=[...Array(lanes).keys()],free=all.filter(i=>!busy.has(i)),pool=free.length?free:all;const lane=pool[Math.floor(Math.random()*pool.length)];const x=8+lane*laneW+Math.random()*Math.max(0,laneW-wordW);return{lane,x:Math.max(8,Math.min(x,W+8-wordW))}}
 function show(id){screens.forEach(x=>$('#'+x).classList.toggle('active',x===id));if(id==='startScreen')hiscore?.refresh()}
 function getPool(){return WORDS}
-// 단어 단계: 레벨 2마다 다음 단계가 풀림 (Lv1~2 초등, 3~4 중등, 5~6 고등, 7~8 중급, 9~ 고급).
+// 단어 단계: Lv1~3 초등, 4~6 중등, 7~10 고등, 11~14 중급, 15~ 고급.
 // 새로 풀린 단계 단어가 40%, 나머지 60%는 이전 단계들에서 골고루 섞여 나옴
 const TIERS=['elementary','middle','high','intermediate','advanced'];
 const LEVEL_TIME=30,COMBO_LEVEL=15,FLOOR_MAX=10;
+function tierFor(level){return level>=15?4:level>=11?3:level>=7?2:level>=4?1:0}
+// 첫 화면에서 고를 수 있는 시작 레벨
+const START_LEVELS=[1,3,5,7,9,11,13,15,17,19];
 
 function nextWord(){const cur=state.tier;let t=cur;if(cur>0&&Math.random()>=.4)t=Math.floor(Math.random()*cur);const key=TIERS[t];let d=state.decks[key];if(!d||!d.length){const onScreen=new Set(state.active.map(w=>w.en));d=state.decks[key]=WORDS.filter(w=>w.difficulty===key&&!onScreen.has(w.en)).sort(()=>Math.random()-.5)}return d.pop()||WORDS[Math.floor(Math.random()*WORDS.length)]}
 
 function reset(){state={score:0,combo:0,maxCombo:0,correct:0,missed:[],active:[],running:true,paused:false,ending:false,elapsed:0,level:1,levelTime:0,floor:0,risePx:-1,bonus:[],bonusClock:0,tier:0,decks:{}};els.layer.innerHTML='';bonusLayer.innerHTML='';els.field.classList.remove('hit','ground-impact','deadline-hit','critical');els.field.style.setProperty('--ground-rise','0px');spawnClock=0;lastTime=performance.now();applyGroundRise();applySky();updateHud()}
-function start(){sfx.unlock();sfx.start();lockPortrait();reset();state.tier=startTier;state.level=startTier*2+1;applySky();updateHud();show('gameScreen');spawn();els.input.value='';window.vk?.clear();focusInput();setTimeout(()=>{if(document.activeElement!==els.input)focusInput()},120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
-function spawn(){const word=nextWord(),node=document.createElement('div');node.className='word';node.textContent=word.en;els.layer.appendChild(node);const {lane,x}=pickLane(node.offsetWidth),base=DIFFICULTY[selectedMode].speed;const item={...word,node,x,lane,p:0,speed:base+Math.random()*7};state.active.push(item);node.style.transform=`translate(${x}px,${TOP}px)`}
+function start(){sfx.unlock();sfx.start();lockPortrait();reset();state.level=START_LEVELS[startPick];state.tier=tierFor(state.level);applySky();updateHud();show('gameScreen');spawn();els.input.value='';window.vk?.clear();focusInput();setTimeout(()=>{if(document.activeElement!==els.input)focusInput()},120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function spawn(){const word=nextWord(),node=document.createElement('div');node.className='word';node.textContent=word.en;els.layer.appendChild(node);const {lane,x}=pickLane(node.offsetWidth),base=DIFFICULTY[selectedMode].speed;const item={...word,node,x,lane,p:0,speed:(base+Math.random()*7)*fallBoost()};state.active.push(item);node.style.transform=`translate(${x}px,${TOP}px)`}
 function showLevelUp(title,sub){sfx.levelUp();els.levelUp.querySelector('small').textContent=title||'LEVEL UP';els.levelUp.querySelector('span').textContent=state.level;els.levelUp.querySelector('em').textContent=sub||'';els.levelUp.classList.remove('show');void els.levelUp.offsetWidth;els.levelUp.classList.add('show');navigator.vibrate?.([25,35,55])}
 // 실수(단어 놓침, 카드 파괴)할 때마다 바닥이 한 칸씩 올라옴. DEAD LINE에 닿으면 게임 끝
 function raiseFloor(){if(!state?.running||state.ending)return;state.floor=Math.min(FLOOR_MAX,state.floor+1);applyGroundRise();els.field.classList.remove('ground-impact');void els.field.offsetWidth;els.field.classList.add('ground-impact');els.field.classList.toggle('critical',state.floor>=FLOOR_MAX-2);if(state.floor>=FLOOR_MAX){state.ending=true;els.field.classList.add('deadline-hit');sfx.gameOver();navigator.vibrate?.([70,35,70,35,120]);setTimeout(end,2400)}}
-// 하늘: 레벨이 오를수록 낮(Lv1~4) → 노을(Lv5~8) → 밤(Lv9~)으로 서서히 바뀜
+// 하늘: 레벨이 오를수록 낮(Lv1~6) → 노을(Lv7~13) → 밤(Lv14~)으로 서서히 바뀜
 const sky=document.createElement('div');sky.className='sky';sky.setAttribute('aria-hidden','true');
 sky.innerHTML='<i class="sky-day"></i><i class="sky-sunset"></i><i class="sky-night"></i><b class="sky-cloud c1"></b><b class="sky-cloud c2"></b><b class="sky-cloud c3"></b><b class="sky-stars"></b>';
 els.field.insertBefore(sky,els.field.firstChild);
-function skyPhase(level){return level>=9?'night':level>=5?'sunset':'day'}
+function skyPhase(level){return level>=14?'night':level>=7?'sunset':'day'}
 function applySky(){const ph=skyPhase(state?.level||1),gs=$('#gameScreen');['day','sunset','night'].forEach(p=>gs.classList.toggle('phase-'+p,p===ph))}
 // 맞히면 바닥이 내려감 (보통 단어 1/3칸, 보너스 단어 1칸). 1/3 단위로 맞춰서 소수점 오차가 쌓이지 않게
 function lowerFloor(n){if(state.floor<=0)return;state.floor=Math.max(0,Math.round((state.floor-n)*3)/3);applyGroundRise()}
 // 레벨: 시간이 지나거나(LEVEL_TIME초) 콤보를 COMBO_LEVEL번 이어가면 오름.
 // 레벨이 오르면 어려운 단어가 새로 풀리고 점수 배율이 오름 (떨어지는 속도는 그대로). 콤보로 오르면 보너스 점수
-function levelUp(byCombo){state.level++;state.levelTime=0;const parts=[];if(byCombo){const bonus=state.level*500;state.score+=bonus;parts.push(`보너스 +${bonus.toLocaleString()}`)}const t=Math.min(TIERS.length-1,Math.floor((state.level-1)/2));if(t>state.tier){state.tier=t;parts.push('더 어려운 단어 등장!')}if(!parts.length)parts.push('점수 배율 UP!');showLevelUp(byCombo?'COMBO LEVEL UP':'LEVEL UP',parts.join(' · '));applySky();updateHud()}
+function levelUp(byCombo){state.level++;state.levelTime=0;const parts=[];if(byCombo){const bonus=state.level*500;state.score+=bonus;parts.push(`보너스 +${bonus.toLocaleString()}`)}const t=tierFor(state.level);if(t>state.tier){state.tier=t;parts.push('더 어려운 단어 등장!')}if(!parts.length)parts.push('점수 배율 UP!');showLevelUp(byCombo?'COMBO LEVEL UP':'LEVEL UP',parts.join(' · '));applySky();updateHud()}
 function updateGauge(){const v=Math.max(0,Math.min(1,state.levelTime/LEVEL_TIME));els.levelGauge.style.transform=`scaleX(${v})`}
 function loop(now){if(!state?.running)return;const dt=Math.min((now-lastTime)/1000,.05);lastTime=now;if(!state.paused&&!state.ending){state.elapsed+=dt;spawnClock+=dt;state.levelTime+=dt;if(state.levelTime>=LEVEL_TIME)levelUp(false);updateGauge();if(state.ending){raf=requestAnimationFrame(loop);return}applyGroundRise();const interval=spawnInterval();if(spawnClock>=interval&&state.active.length<maxWords()){spawnClock=0;spawn()}const floor=els.field.clientHeight-els.ground.offsetHeight-36,dist=Math.max(1,floor-TOP),limit=floor-Math.max(0,state.risePx);updateBonus(dt);for(let i=state.active.length-1;i>=0;i--){const w=state.active[i];w.p+=w.speed*dt/FALL;const y=TOP+w.p*dist;w.y=y;const maxX=els.field.clientWidth-w.node.offsetWidth-8;if(w.x>maxX)w.x=Math.max(8,maxX);w.node.style.transform=`translate(${w.x}px,${y}px)`;w.node.classList.toggle('danger',y>=limit-95);if(y>=limit)miss(i)}}raf=requestAnimationFrame(loop)}
 function norm(v){return v.trim().replace(/\s+/g,'').replace(/[.!?~]/g,'')}
@@ -201,15 +198,15 @@ $('#neClose').addEventListener('click',()=>{sfx.click();input.blur();neModal.hid
 refresh();return{refresh,onGameEnd}})();
 
 // ===== 시작 레벨 고르기 (첫 화면) =====
-// 선 위의 동그라미를 누르거나 선을 따라 끌어서 고름. LV 1·3·5·7·9 = 단어 단계가 하나씩 열리는 레벨. 고른 것은 기억함
+// 선 위의 동그라미를 누르거나 선을 따라 끌어서 고름. LV 1·3·5 … 19 (START_LEVELS). 고른 것은 기억함
 (()=>{const pick=$('#levelPick');if(!pick)return;const nodes=[...pick.querySelectorAll('.lv-node')],fill=pick.querySelector('.lv-fill');
-try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<nodes.length)startTier=v}catch(e){}
-function select(t,sound){if(sound&&t!==startTier){sfx.unlock();sfx.click()}startTier=t;const lv=t*2+1;nodes.forEach((n,i)=>{n.classList.toggle('active',i===t);n.classList.toggle('passed',i<t)});fill.style.width=t/(nodes.length-1)*100+'%';
+try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<nodes.length)startPick=v}catch(e){}
+function select(t,sound){if(sound&&t!==startPick){sfx.unlock();sfx.click()}startPick=t;const lv=START_LEVELS[t];nodes.forEach((n,i)=>{n.classList.toggle('active',i===t);n.classList.toggle('passed',i<t)});fill.style.width=t/(nodes.length-1)*100+'%';
   $('#lvNow').textContent=lv;$('#lvMult').textContent=`점수 ×${1+(lv-1)*.25}`;pick.setAttribute('aria-valuenow',lv);try{localStorage.setItem('wordRainStart',t)}catch(e){}}
 function nearest(x){let best=0,d=1e9;nodes.forEach((n,i)=>{const r=n.getBoundingClientRect(),dd=Math.abs(r.left+r.width/2-x);if(dd<d){d=dd;best=i}});return best}
 let drag=false;
-pick.addEventListener('pointerdown',e=>{drag=true;pick.setPointerCapture?.(e.pointerId);select(nearest(e.clientX),true)});
+pick.addEventListener('pointerdown',e=>{drag=true;try{pick.setPointerCapture(e.pointerId)}catch(err){}select(nearest(e.clientX),true)});
 pick.addEventListener('pointermove',e=>{if(drag)select(nearest(e.clientX),true)});
 ['pointerup','pointercancel'].forEach(t=>pick.addEventListener(t,()=>{drag=false}));
-pick.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();select(Math.max(0,Math.min(nodes.length-1,startTier+(e.key==='ArrowRight'?1:-1))),true)}});
-select(startTier,false)})();
+pick.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();select(Math.max(0,Math.min(nodes.length-1,startPick+(e.key==='ArrowRight'?1:-1))),true)}});
+select(startPick,false)})();

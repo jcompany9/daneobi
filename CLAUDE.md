@@ -2,6 +2,8 @@
 
 영어 단어가 떨어지면 한글 뜻을 입력하는 타자 게임. 빌드 도구 없이 `dist/` 폴더의 정적 파일(HTML/CSS/JS)로 동작하고, GitHub(jcompany9/daneobi)에 올리면 Vercel이 배포함.
 
+단어 데이터는 `dist/words/`에 있음: core.js(예전 단어 정리본) + e·m·h·i·a.js(단계별 추가분). 형식은 `addWords([['영어','뜻1|뜻2','단계 글자'], ...])`, 단계 글자 e초등·m중등·h고등·i중급·a고급. 같은 영어 단어는 한 파일에만 둘 것. 뜻은 한글만(띄어쓰기는 정답 비교 때 무시).
+
 `api/scores.js`는 오늘의 순위를 저장하는 Vercel 서버 함수. Upstash Redis 환경 변수(KV_REST_API_URL/TOKEN 또는 UPSTASH_REDIS_REST_URL/TOKEN)가 없으면 503을 돌려주고, 게임은 기기 저장 순위로 동작함.
 
 ## 작업 규칙

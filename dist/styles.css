@@ -424,3 +424,9 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .lv-node.active i{width:34px;height:34px;margin:0;background:#ffd84d;box-shadow:2px 2px 0 #29254f}
 .lv-node.active small{color:#29254f}
 .level-pick:focus-visible .lv-node.active i{outline:3px solid #57d7d9;outline-offset:2px}
+/* 시작 레벨 10칸: 동그라미를 조금 작게 */
+.lv-node{width:28px}
+.lv-node i{width:18px;height:18px;margin:5px 0;border-width:3px}
+.lv-node.active i{width:28px;height:28px;margin:0;border-width:4px}
+.lv-track{left:14px;right:14px;top:14px}
+.lv-node small{font-size:11px}
