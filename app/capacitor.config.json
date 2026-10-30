@@ -5,5 +5,11 @@
   "backgroundColor": "#201d49",
   "android": {
     "backgroundColor": "#201d49"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_daneobi",
+      "iconColor": "#ff5278"
+    }
   }
 }

@@ -562,3 +562,25 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 /* 앱: 이미지 저장 버튼을 숨겨서 공유 버튼을 한 줄 전체로 */
 .is-app .result-actions{grid-template-columns:1fr}
 .is-app .result-actions .share-btn{width:100%}
+/* ===== 시험별 단어장 고르기 (앱에서만) ===== */
+.exam-pick{display:flex;gap:6px;margin:0 -4px 4px;padding:2px 4px 6px;overflow-x:auto;scrollbar-width:none}
+.exam-pick[hidden]{display:none}
+.exam-pick::-webkit-scrollbar{display:none}
+.exam-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:76px;padding:6px 8px;border:3px solid #29254f;background:#fff7dc;color:#29254f;font:inherit;box-shadow:2px 2px 0 #29254f;cursor:pointer}
+.exam-chip b{font-size:14px;font-weight:400;white-space:nowrap}
+.exam-chip small{font-size:9px;color:#88829e;white-space:nowrap}
+.exam-chip.on{background:#57d7d9}
+.exam-chip.on small{color:#29254f}
+.exam-note{margin:0 0 8px;font-size:10px;color:#ff5278;min-height:0}
+.exam-note:empty{display:none}
+.exam-mode .hud .level b{background:#57d7d9;color:#29254f!important}
+/* 연속 학습일, 알림 */
+.streak-chip{font-style:normal;font-size:12px;color:#ff5278;margin-left:4px}
+.streak-chip[hidden]{display:none}
+.note-alarm{display:flex;align-items:center;gap:8px;font-size:13px;color:#29254f}
+.note-alarm[hidden]{display:none}
+.note-alarm input{width:20px;height:20px;accent-color:#ff5278}
+.note-list li.due b:after{content:"오늘 복습";margin-left:6px;padding:1px 4px;font-size:9px;background:#ff5278;color:#fff7dc;vertical-align:middle}
+.note-alarm-ask{display:block;width:100%;margin:0 0 8px;padding:10px;border:3px solid #29254f;background:#ffd84d;color:#29254f;font:inherit;font-size:14px;cursor:pointer}
+.note-alarm-ask:disabled{background:#fff7dc;color:#88829e}
+.start-screen>.mini-rank,.start-screen>.start-card{flex-shrink:0}

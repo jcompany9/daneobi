@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 알림 작은 아이콘: 떨어지는 빗방울 세 개 (안드로이드는 흰색 모양만 씀) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFFFF" android:pathData="M4,3h3v7h-3z M10.5,8h3v7h-3z M17,4h3v7h-3z M3,18h18v3h-18z"/>
+</vector>
