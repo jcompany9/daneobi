@@ -504,3 +504,23 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .fx-stamp{position:absolute;left:50%;top:5px;margin-left:-44px;padding:1px 6px;border:2px solid #ff5278;color:#ff5278;font-style:normal;font-size:11px;white-space:nowrap;letter-spacing:.04em;background:#fff7dc;rotate:-10deg;animation:fxStamp .3s steps(3) both}
 @keyframes fxStamp{0%{scale:2.4;opacity:0}100%{scale:1;opacity:1}}
 @media (prefers-reduced-motion:reduce){.start-screen .drop,.word.danger,.fx-confetti{animation:none!important}}
+
+/* ===== 효과 정리 + 카드 깨짐 다시 ===== */
+/* 닿기 직전: 흔들지 않고 빨간색만 */
+.word.danger,.word.tier-elementary.danger,.word.tier-middle.danger,.word.tier-high.danger,.word.tier-intermediate.danger,.word.tier-advanced.danger{animation:none}
+/* 금은 카드를 가로지르되 글자 뒤에 옅게 그림 (z-index:-1 = 카드 배경 위, 글자 아래) */
+.word.crack-1:after,.word.crack-2:after{z-index:-1;background-size:100% 100%;background-repeat:no-repeat}
+.word.crack-1:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 26 L14 22 L22 28 L34 19 L46 23 L58 15 L70 20 L84 12 L100 16' fill='none' stroke='%2329254f' stroke-opacity='.38' stroke-width='2' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.word.crack-2:after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M0 26 L14 22 L22 28 L34 19 L46 23 L58 15 L70 20 L84 12 L100 16 M34 19 L38 8 L44 0 M58 15 L62 26 L60 40 M84 12 L88 30 L96 40 M14 22 L10 34 L4 40 M70 20 L76 4' fill='none' stroke='%2329254f' stroke-opacity='.38' stroke-width='2' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E")}
+.word.crack-1{filter:brightness(.96)}
+.word.crack-2{filter:brightness(.9)}
+/* 금이 갈 때: 하얗게 번쩍 + 짧게 흔들림 */
+.word.cracking{animation:fxCrack .26s steps(4)}
+@keyframes fxCrack{0%{rotate:0;filter:brightness(1.6)}25%{rotate:-3deg}50%{rotate:3deg}75%{rotate:-1deg}100%{rotate:0}}
+/* 단계 색: 카드 모서리 깎기(clip-path)가 바깥 그림자를 잘라서, 카드 안쪽 아래 띠로 표시 */
+.word.tier-elementary{box-shadow:inset 0 -4px 0 #57d7d9}
+.word.tier-middle{box-shadow:inset 0 -4px 0 #7ed957}
+.word.tier-high{box-shadow:inset 0 -4px 0 #ffd84d}
+.word.tier-intermediate{box-shadow:inset 0 -4px 0 #ff9f43}
+.word.tier-advanced{box-shadow:inset 0 -4px 0 #b07cff}
+.word.danger,.word.tier-elementary.danger,.word.tier-middle.danger,.word.tier-high.danger,.word.tier-intermediate.danger,.word.tier-advanced.danger{box-shadow:inset 0 -4px 0 #ff5171}
