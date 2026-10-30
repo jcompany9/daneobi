@@ -362,16 +362,16 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .answer-bar .kb-toggle[hidden]{display:none}
 .vk-on .answer-bar{padding-bottom:8px}
 .vk-on .answer-bar input{border-color:#57d7d9;caret-color:transparent}
-.vkb{--vk-h:44px;position:relative;z-index:8;padding:2px 4px calc(6px + env(safe-area-inset-bottom));background:#201d49;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.vkb{--vk-h:52px;position:relative;z-index:8;padding:2px 4px calc(6px + env(safe-area-inset-bottom));background:#201d49;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .vkb[hidden]{display:none}
 .phase-day .vkb,.phase-sunset .vkb{background:#fff0c7}
-.vk-qw{display:grid;grid-template-columns:repeat(20,1fr);gap:6px 4px}
+.vk-qw{display:grid;grid-template-columns:repeat(20,1fr);gap:8px 4px}
 .vk-qw .vk-key{grid-column:span 2}
 .vk-qw .vk-gap{grid-column:span 1}
 .vk-qw .fn{grid-column:span 3}
 .vk-cji{display:grid;grid-template-columns:repeat(3,1fr) .8fr;gap:6px 5px}
 .vk-cji .enter{grid-row:span 3}
-.vk-key{height:var(--vk-h);min-width:0;padding:0;border:2px solid #29254f;border-radius:0;background:#fff7dc;color:#29254f;font-size:19px;line-height:1;box-shadow:0 3px 0 #29254f;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.vk-key{height:var(--vk-h);min-width:0;padding:0;border:2px solid #29254f;border-radius:0;background:#fff7dc;color:#29254f;font-size:21px;line-height:1;box-shadow:0 3px 0 #29254f;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .vk-key.v{background:#ffe1e8}
 .vk-key.fn{background:#ffd84d;font-size:18px}
 .vk-key.fn.on{background:#57d7d9}
@@ -380,6 +380,6 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .vk-cji .vk-key.enter{height:auto}
 .vk-cji .vk-key small{font-size:13px;margin-left:3px;opacity:.6}
 .vk-cji .vk-key b{font-weight:400}
-@media(max-height:700px){.vkb{--vk-h:40px}}
-@media(max-height:600px){.vkb{--vk-h:35px}.vk-qw{gap:5px 3px}}
+@media(max-height:700px){.vkb{--vk-h:47px}}
+@media(max-height:600px){.vkb{--vk-h:40px}.vk-qw{gap:5px 3px}}
 .vk-cji .vk-key[data-k="·"]{font-size:34px}
