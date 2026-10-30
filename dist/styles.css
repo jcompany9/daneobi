@@ -608,3 +608,6 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .hud .icon-btn,.kb-open .icon-btn{opacity:1;font-size:16px}
 /* ===== 위쪽 레벨·버튼: 그림자와 가짜 굵게 없이 (두 겹으로 보이던 것) ===== */
 .hud .level b,.phase-day .hud .level b,.phase-sunset .hud .level b,.phase-night .hud .level b,.hud .icon-btn{text-shadow:none!important;font-weight:400}
+/* ===== 키보드 바꾸기 버튼: 글자 대신 픽셀 아이콘 ===== */
+.answer-bar .kb-toggle{display:grid;place-items:center}
+.answer-bar .kb-toggle svg{display:block}

@@ -33,7 +33,9 @@ const SHIFT={'ㅂ':'ㅃ','ㅈ':'ㅉ','ㄷ':'ㄸ','ㄱ':'ㄲ','ㅅ':'ㅆ','ㅐ':'
 const QW_ROWS=['ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔ','ㅁㄴㅇㄹㅎㅗㅓㅏㅣ','ㅋㅌㅊㅍㅠㅜㅡ'];
 // 실제 키보드(태블릿 키보드 등)로 쳐도 두벌식 자리대로 들어가게
 const PHYS={q:'ㅂ',w:'ㅈ',e:'ㄷ',r:'ㄱ',t:'ㅅ',y:'ㅛ',u:'ㅕ',i:'ㅑ',o:'ㅐ',p:'ㅔ',a:'ㅁ',s:'ㄴ',d:'ㅇ',f:'ㄹ',g:'ㅎ',h:'ㅗ',j:'ㅓ',k:'ㅏ',l:'ㅣ',z:'ㅋ',x:'ㅌ',c:'ㅊ',v:'ㅍ',b:'ㅠ',n:'ㅜ',m:'ㅡ',Q:'ㅃ',W:'ㅉ',E:'ㄸ',R:'ㄲ',T:'ㅆ',O:'ㅒ',P:'ㅖ'};
-const MODES=['qwerty','cji','system'],LABEL={qwerty:'두벌',cji:'천지',system:'폰'};
+const MODES=['qwerty','cji','system'],LABEL={qwerty:'두벌식 키보드',cji:'천지인 키보드',system:'휴대폰 키보드'};
+// 키보드 바꾸기 버튼 아이콘 (픽셀 그림): 두벌식 = 넓은 키보드, 천지인 = 3×4 키패드, 휴대폰 = 폰 모양
+const ICON={qwerty: '<svg viewBox="0 0 18 12" width="36" height="24" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'18\' height=\'1\'/><rect x=\'0\' y=\'11\' width=\'18\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'12\'/><rect x=\'17\' y=\'0\' width=\'1\' height=\'12\'/><rect x=\'2\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'11\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'14\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'3\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'6\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'9\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'12\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'8\' width=\'8\' height=\'2\'/></svg>', cji: '<svg viewBox="0 0 12 16" width="24" height="32" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'12\' height=\'1\'/><rect x=\'0\' y=\'15\' width=\'12\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'11\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'2\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'11\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'11\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'11\' width=\'2\' height=\'2\'/></svg>', system: '<svg viewBox="0 0 10 16" width="20" height="32" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'10\' height=\'1\'/><rect x=\'0\' y=\'15\' width=\'10\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'9\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'3\' y=\'2\' width=\'4\' height=\'1\'/><rect x=\'2\' y=\'4\' width=\'6\' height=\'8\'/><rect x=\'4\' y=\'13\' width=\'2\' height=\'1\'/></svg>'};
 const MAX=20,touch=matchMedia('(pointer:coarse)').matches;
 let mode='qwerty';try{const m=localStorage.getItem('wordRainKb');if(MODES.includes(m))mode=m}catch(e){}
 let units=[],shift=false,lastKey=null,rep=0;
@@ -50,7 +52,7 @@ function render(){
     const c=k=>key(k,`<b>${CJI_C[k][0]}</b><small>${CJI_C[k].slice(1)}</small>`);
     pad.innerHTML=`<div class="vk-cji">${key('ㅣ','ㅣ','v')}${key('·','·','v')}${key('ㅡ','ㅡ','v')}${key('bs','⌫','fn')}${c('g')}${c('n')}${c('d')}${key('enter','↵','fn enter')}${c('b')}${c('s')}${c('j')}<span></span>${c('o')}${key('sep','→','fn')}</div>`;
   }else pad.innerHTML='';
-  toggle.textContent=LABEL[mode];
+  toggle.innerHTML=ICON[mode];toggle.title=LABEL[mode];toggle.setAttribute('aria-label','키보드 바꾸기: 지금 '+LABEL[mode]);
 }
 function apply(){
   toggle.hidden=!touch;form.classList.toggle('has-kbt',touch);root.classList.toggle('vk-on',on());
