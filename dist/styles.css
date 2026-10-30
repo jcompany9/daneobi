@@ -430,3 +430,77 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .lv-node.active i{width:28px;height:28px;margin:0;border-width:4px}
 .lv-track{left:14px;right:14px;top:14px}
 .lv-node small{font-size:11px}
+
+/* ===== 화면 효과 (fx.js) ===== */
+/* 정답 조각, 날아가는 점수 */
+.fx-spark{z-index:9}
+.fx-float{position:absolute;z-index:9;pointer-events:none;font-size:18px;font-weight:400;color:#ffd84d;white-space:nowrap;text-shadow:2px 0 #29254f,-2px 0 #29254f,0 2px #29254f,0 -2px #29254f;translate:-50% -50%;animation:fxFly .75s cubic-bezier(.5,0,.75,0) forwards}
+.fx-float.bonus{color:#57d7d9;font-size:20px}
+.fx-float.hot{color:#ff5278;font-size:22px}
+@keyframes fxFly{0%{transform:translate(0,0) scale(.6);opacity:0}15%{transform:translate(0,-14px) scale(1.25);opacity:1}35%{transform:translate(0,-18px) scale(1)}100%{transform:translate(var(--tx),var(--ty)) scale(.5);opacity:.2}}
+/* 단어가 사라질 때 제자리에서 커지며 사라짐 (예전엔 화면 왼쪽 위로 튀었음) */
+@keyframes wordPop{to{opacity:0;scale:1.5}}
+.playfield.fx-glow:after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;box-shadow:inset 0 0 0 4px #ffd84d,inset 0 0 26px #ffd84daa;animation:fxGlow .4s steps(3) forwards}
+@keyframes fxGlow{to{opacity:0}}
+.combo-burst{scale:var(--combo-scale,1);font-size:clamp(26px,8.5vw,42px);white-space:nowrap}
+/* 오답: 입력칸 흔들림 */
+.answer-bar.fx-shake{animation:fxShake .32s steps(6)}
+.answer-bar.fx-shake input{border-color:#ff5171!important;background:#ffe1e6}
+@keyframes fxShake{0%,100%{translate:0}20%{translate:-7px}40%{translate:6px}60%{translate:-4px}80%{translate:3px}}
+/* 레벨 업 색종이 */
+.fx-confetti{position:absolute;top:-10px;z-index:9;width:7px;height:10px;pointer-events:none;box-shadow:1px 1px 0 #29254f;animation:fxConfetti 1.4s steps(14) forwards}
+@keyframes fxConfetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--sway),var(--fall)) rotate(540deg);opacity:0}}
+
+/* ===== 위쪽 점수판 ===== */
+.hud,.kb-open .hud{gap:8px}
+.hud #pauseBtn{order:0}
+.hud .level{order:1}
+.hud .stat:not(.level):not(.tier):not(.combo){order:2;flex:1;text-align:center}
+.hud .combo{order:3}
+.hud .sound-toggle{order:4}
+.hud .level b,.kb-open .hud .level b{display:inline-block;padding:3px 6px 2px;background:#29254f;color:#ffd84d!important;font-size:13px;text-shadow:none;box-shadow:2px 2px 0 #ff5278}
+.hud .level b:before{content:"LV "}
+#score{display:inline-block;font-size:26px!important;letter-spacing:.02em}
+#score.fx-pop{animation:fxPop .25s steps(3)}
+@keyframes fxPop{40%{scale:1.25}100%{scale:1}}
+.hud .combo,.kb-open .hud .combo{display:flex!important;flex-direction:column;align-items:center;min-width:44px;padding:2px 6px;background:#fff7dc;border:2px solid #29254f;box-shadow:2px 2px 0 #29254f;visibility:hidden}
+.hud .combo.on{visibility:visible}
+.hud .combo small,.kb-open .hud .combo small{display:block;font-size:8px;color:#ff5278;letter-spacing:.06em;line-height:1}
+.hud .combo b,.kb-open .hud .combo b{font-size:15px!important;color:#29254f!important;text-shadow:none!important;line-height:1.1}
+.hud .combo.hot{background:#ffd84d}
+.hud .combo.fx-pop{animation:fxPop .25s steps(3)}
+.pressure-meter,.kb-open .pressure-meter{height:6px}
+.pressure-meter>i{height:6px}
+
+/* ===== 단어 카드: 단계별 색 ===== */
+.word.tier-elementary{box-shadow:3px 3px 0 #57d7d9}
+.word.tier-middle{box-shadow:3px 3px 0 #7ed957}
+.word.tier-high{box-shadow:3px 3px 0 #ffd84d}
+.word.tier-intermediate{box-shadow:3px 3px 0 #ff9f43}
+.word.tier-advanced{box-shadow:3px 3px 0 #b07cff;background:#f3eaff}
+/* 바닥에 닿기 직전: 빨개지며 흔들림 */
+.word.danger,.word.tier-elementary.danger,.word.tier-middle.danger,.word.tier-high.danger,.word.tier-intermediate.danger,.word.tier-advanced.danger{border-color:#ff5171;color:#d6304f;box-shadow:3px 3px 0 #ff5171;animation:fxDanger .28s steps(2) infinite}
+@keyframes fxDanger{0%,100%{rotate:-2deg}50%{rotate:2deg}}
+
+/* ===== 바닥: 도트 벽돌 ===== */
+.ground{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16' shape-rendering='crispEdges'%3E%3Crect width='32' height='16' fill='%231b1840'/%3E%3Crect x='0' y='0' width='15' height='7' fill='%233a3470'/%3E%3Crect x='16' y='0' width='16' height='7' fill='%233a3470'/%3E%3Crect x='0' y='8' width='7' height='7' fill='%233a3470'/%3E%3Crect x='8' y='8' width='15' height='7' fill='%233a3470'/%3E%3Crect x='24' y='8' width='8' height='7' fill='%233a3470'/%3E%3Crect x='1' y='1' width='4' height='1' fill='%235a5398'/%3E%3Crect x='17' y='1' width='4' height='1' fill='%235a5398'/%3E%3Crect x='9' y='9' width='4' height='1' fill='%235a5398'/%3E%3Crect x='25' y='9' width='4' height='1' fill='%235a5398'/%3E%3C/svg%3E") 0 18px/32px 16px,#1b1840}
+.phase-day .ground{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16' shape-rendering='crispEdges'%3E%3Crect width='32' height='16' fill='%23e48fa3'/%3E%3Crect x='0' y='0' width='15' height='7' fill='%23f6b7c3'/%3E%3Crect x='16' y='0' width='16' height='7' fill='%23f6b7c3'/%3E%3Crect x='0' y='8' width='7' height='7' fill='%23f6b7c3'/%3E%3Crect x='8' y='8' width='15' height='7' fill='%23f6b7c3'/%3E%3Crect x='24' y='8' width='8' height='7' fill='%23f6b7c3'/%3E%3Crect x='1' y='1' width='4' height='1' fill='%23ffd6dd'/%3E%3Crect x='17' y='1' width='4' height='1' fill='%23ffd6dd'/%3E%3Crect x='9' y='9' width='4' height='1' fill='%23ffd6dd'/%3E%3Crect x='25' y='9' width='4' height='1' fill='%23ffd6dd'/%3E%3C/svg%3E") 0 18px/32px 16px,#e48fa3}
+.phase-sunset .ground{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16' shape-rendering='crispEdges'%3E%3Crect width='32' height='16' fill='%23b45d78'/%3E%3Crect x='0' y='0' width='15' height='7' fill='%23d97a92'/%3E%3Crect x='16' y='0' width='16' height='7' fill='%23d97a92'/%3E%3Crect x='0' y='8' width='7' height='7' fill='%23d97a92'/%3E%3Crect x='8' y='8' width='15' height='7' fill='%23d97a92'/%3E%3Crect x='24' y='8' width='8' height='7' fill='%23d97a92'/%3E%3Crect x='1' y='1' width='4' height='1' fill='%23f0a3b3'/%3E%3Crect x='17' y='1' width='4' height='1' fill='%23f0a3b3'/%3E%3Crect x='9' y='9' width='4' height='1' fill='%23f0a3b3'/%3E%3Crect x='25' y='9' width='4' height='1' fill='%23f0a3b3'/%3E%3C/svg%3E") 0 18px/32px 16px,#b45d78}
+.ground:after{background:inherit;background-position:0 2px}
+
+/* ===== 시작 화면: 단어가 실제로 떨어짐 ===== */
+.start-screen .drop{animation:fxDrop 4.2s linear infinite}
+.start-screen .drop.d2{animation-delay:-1.4s}
+.start-screen .drop.d3{animation-delay:-2.8s}
+@keyframes fxDrop{0%{translate:0 -90px;opacity:0}12%{opacity:1}80%{opacity:1}100%{translate:0 120px;opacity:0}}
+
+/* ===== 결과 화면 ===== */
+.result-screen.active .score-ring{animation:fxIn .35s steps(4) both}
+.result-screen.active .result-grid{animation:fxIn .35s steps(4) .15s both}
+.result-screen.active .review{animation:fxIn .35s steps(4) .3s both}
+.result-screen.active .result-actions,.result-screen.active .retry-btn{animation:fxIn .35s steps(4) .45s both}
+@keyframes fxIn{0%{opacity:0;translate:0 18px}100%{opacity:1;translate:0 0}}
+.score-ring{position:relative}
+.fx-stamp{position:absolute;left:50%;top:5px;margin-left:-44px;padding:1px 6px;border:2px solid #ff5278;color:#ff5278;font-style:normal;font-size:11px;white-space:nowrap;letter-spacing:.04em;background:#fff7dc;rotate:-10deg;animation:fxStamp .3s steps(3) both}
+@keyframes fxStamp{0%{scale:2.4;opacity:0}100%{scale:1;opacity:1}}
+@media (prefers-reduced-motion:reduce){.start-screen .drop,.word.danger,.fx-confetti{animation:none!important}}
