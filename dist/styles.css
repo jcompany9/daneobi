@@ -594,3 +594,6 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .exam-chip{min-width:0;padding:4px 2px;gap:1px;border-width:2px;box-shadow:2px 2px 0 #29254f}
 .exam-chip b{font-size:12px}
 .exam-chip small{font-size:8px}
+/* ===== 복습 알림 시각 고르기 ===== */
+.note-alarm label{display:flex;align-items:center;gap:8px}
+.note-alarm select{margin-left:auto;height:32px;padding:0 6px;border:2px solid #29254f;background:#fff7dc;color:#29254f;font:inherit;font-size:13px}

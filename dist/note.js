@@ -15,7 +15,7 @@ let data=load('wordRainNote',{});
 // 한 번이라도 맞힌 단어 (단어장 진도용)
 let known=load('wordRainKnown',{});
 let streak=load('wordRainStreak',{last:'',n:0});
-let settings=load('wordRainLearn',{exam:'',alarm:false});
+let settings=load('wordRainLearn',{exam:'',alarm:false});if(!(settings.hour>=0&&settings.hour<24))settings.hour=20;
 const save=()=>store('wordRainNote',data);
 const byEn=new Map(WORDS.map(w=>[w.en,w]));
 const today=(t=Date.now())=>new Date(t).toLocaleDateString('sv');
@@ -72,20 +72,25 @@ function streakNow(){const t=today(),y=today(Date.now()-DAY);return streak.last=
 // 결과 화면 위에 "오답 노트에 n개 추가" 한 줄 + 알림 켜기 안내
 function onEnd(){touchStreak();const rv=$('#review');
   if(added>0){const p=document.createElement('p');p.className='note-added';p.textContent=`📒 오답 노트에 ${added}개 추가 (외우는 중 ${learning().length}개)`;rv.prepend(p)}
-  if(!settings.alarm&&learning().length){const b=document.createElement('button');b.type='button';b.className='note-alarm-ask';b.textContent='🔔 매일 저녁 복습 알림 받기';b.addEventListener('click',async()=>{await setAlarm(true);b.textContent=settings.alarm?'🔔 알림을 켰어요':'알림이 꺼져 있어요 (설정에서 허용해 주세요)';b.disabled=true});rv.prepend(b)}
+  if(!settings.alarm&&learning().length){const b=document.createElement('button');b.type='button';b.className='note-alarm-ask';b.textContent=`🔔 매일 ${hourLabel(settings.hour)} 복습 알림 받기`;b.addEventListener('click',async()=>{await setAlarm(true);b.textContent=settings.alarm?'🔔 알림을 켰어요':'알림이 꺼져 있어요 (설정에서 허용해 주세요)';b.disabled=true});rv.prepend(b)}
   added=0;reviewDoneShown=false;scheduleAlarms()}
 
 function badge(){$('#noteCount').textContent=learning().length;const n=streakNow();const s=$('#streakChip');s.hidden=!n;s.textContent=`🔥 ${n}일 연속`}
 
-// ----- 복습 알림: 매일 저녁 8시, 그날 복습할 단어 수를 알려줌 (앞으로 7일 치를 미리 예약) -----
-const LN=window.Capacitor?.Plugins?.LocalNotifications,ALARM_HOUR=20,IDS=[1,2,3,4,5,6,7];
+// ----- 복습 알림: 매일 고른 시각(기본 저녁 8시), 그날 복습할 단어 수를 알려줌 (앞으로 7일 치를 미리 예약) -----
+const LN=window.Capacitor?.Plugins?.LocalNotifications,IDS=[1,2,3,4,5,6,7];
+const hourLabel=h=>(h<12?'오전 ':'오후 ')+((h%12)||12)+'시';
+// 알림 시각 고르기: 오전 6시 ~ 밤 11시, 정시 단위
+(()=>{const sel=$('#alarmHour');for(let h=6;h<24;h++){const o=document.createElement('option');o.value=h;o.textContent=hourLabel(h);sel.append(o)}
+  sel.value=settings.hour;sel.addEventListener('change',async()=>{settings.hour=Number(sel.value);store('wordRainLearn',settings);
+    if(!settings.alarm)await setAlarm(true);else await scheduleAlarms()})})();
 async function setAlarm(on){
   if(on&&LN){try{const p=await LN.requestPermissions();on=p.display==='granted'}catch(e){on=false}}
   settings.alarm=!!on&&!!LN;store('wordRainLearn',settings);$('#alarmToggle').checked=settings.alarm;await scheduleAlarms();return settings.alarm}
 async function scheduleAlarms(){if(!LN)return;
   try{await LN.cancel({notifications:IDS.map(id=>({id}))})}catch(e){}
   if(!settings.alarm)return;
-  const list=[],base=new Date();base.setHours(ALARM_HOUR,0,0,0);
+  const list=[],base=new Date();base.setHours(settings.hour,0,0,0);
   for(let i=0;i<7;i++){const at=new Date(base.getTime()+i*DAY);if(at<=new Date())continue;
     const due=dueBy(at.getTime()).length,n=streakNow();
     if(!due&&!n)continue;

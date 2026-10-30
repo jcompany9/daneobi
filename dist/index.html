@@ -69,7 +69,7 @@
       <div class="note-stats"><p><small>외우는 중</small><b id="nsLearning">0</b></p><p><small>외운 단어</small><b id="nsLearned">0</b></p><p><small>오늘 복습</small><b id="nsDue">0</b></p></div>
       <div class="note-tabs" role="tablist"><button type="button" data-tab="learning" class="on">외우는 중</button><button type="button" data-tab="learned">외운 단어</button></div>
       <p class="note-tip">오답 단어를 <b>서로 다른 날 3번</b> 맞히면 외운 단어가 돼요. 맞힐 때마다 1일, 3일 뒤에 다시 복습할 차례가 와요.</p>
-      <label id="alarmRow" class="note-alarm" hidden><input type="checkbox" id="alarmToggle"> 매일 저녁 8시 복습 알림</label>
+      <div id="alarmRow" class="note-alarm" hidden><label><input type="checkbox" id="alarmToggle"> 복습 알림</label><select id="alarmHour" aria-label="알림 시각"></select></div>
       <ol id="noteList" class="note-list"></ol>
       <button id="reviewStart" type="button" class="primary">오답만 떨어지는 판 <span>→</span></button>
     </section>
