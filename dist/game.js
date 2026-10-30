@@ -50,7 +50,7 @@ const TIERS=['elementary','middle','high','intermediate','advanced'];
 const LEVEL_TIME=30,COMBO_LEVEL=15,FLOOR_MAX=10;
 function tierFor(level){return level>=15?4:level>=11?3:level>=7?2:level>=4?1:0}
 // 첫 화면에서 고를 수 있는 시작 레벨
-const START_LEVELS=[1,3,5,7,9,11,13,15,17,19];
+const START_LEVELS=[1,2,3,4,5,6,7,8,9];
 
 function nextWord(){if(playMode==='review'){const r=window.note?.pick(state.active);if(r)return r}if(playMode==='exam'){const r=window.note?.examWord(state);if(r)return r}const cur=state.tier;let t=cur;if(cur>0&&Math.random()>=.4)t=Math.floor(Math.random()*cur);const key=TIERS[t];let d=state.decks[key];if(!d||!d.length){const onScreen=new Set(state.active.map(w=>w.en));d=state.decks[key]=WORDS.filter(w=>w.difficulty===key&&!onScreen.has(w.en)).sort(()=>Math.random()-.5)}return d.pop()||WORDS[Math.floor(Math.random()*WORDS.length)]}
 
@@ -198,11 +198,11 @@ $('#neClose').addEventListener('click',()=>{sfx.click();input.blur();neModal.hid
 refresh();return{refresh,onGameEnd}})();
 
 // ===== 시작 레벨 고르기 (첫 화면) =====
-// 선 위의 동그라미를 누르거나 선을 따라 끌어서 고름. LV 1·3·5 … 19 (START_LEVELS). 고른 것은 기억함
+// 선 위의 동그라미를 누르거나 선을 따라 끌어서 고름. LV 1~9 (START_LEVELS). 고른 것은 기억함
 (()=>{const pick=$('#levelPick');if(!pick)return;const nodes=[...pick.querySelectorAll('.lv-node')],fill=pick.querySelector('.lv-fill');
-try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<nodes.length)startPick=v}catch(e){}
+try{const v=Number(localStorage.getItem('wordRainStartLv'));if(v>=0&&v<nodes.length)startPick=v}catch(e){}
 function select(t,sound){if(sound&&t!==startPick){sfx.unlock();sfx.click()}startPick=t;const lv=START_LEVELS[t];nodes.forEach((n,i)=>{n.classList.toggle('active',i===t);n.classList.toggle('passed',i<t)});fill.style.width=t/(nodes.length-1)*100+'%';
-  $('#lvNow').textContent=lv;$('#lvMult').textContent=`점수 ×${1+(lv-1)*.25}`;pick.setAttribute('aria-valuenow',lv);try{localStorage.setItem('wordRainStart',t)}catch(e){}}
+  $('#lvNow').textContent=lv;$('#lvMult').textContent=`점수 ×${1+(lv-1)*.25}`;pick.setAttribute('aria-valuenow',lv);try{localStorage.setItem('wordRainStartLv',t)}catch(e){}}
 function nearest(x){let best=0,d=1e9;nodes.forEach((n,i)=>{const r=n.getBoundingClientRect(),dd=Math.abs(r.left+r.width/2-x);if(dd<d){d=dd;best=i}});return best}
 let drag=false;
 pick.addEventListener('pointerdown',e=>{drag=true;try{pick.setPointerCapture(e.pointerId)}catch(err){}select(nearest(e.clientX),true)});
