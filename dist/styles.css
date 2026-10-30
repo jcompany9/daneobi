@@ -617,3 +617,4 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .vk-cji .vk-key{font-size:24px}
 @media(max-height:700px){.vkb{--vk-h:54px}}
 @media(max-height:600px){.vkb{--vk-h:44px}}
+.hud .level small,.phase-day .hud .level small,.phase-sunset .hud .level small,.phase-night .hud .level small{text-shadow:none!important;font-weight:400}

@@ -1,7 +1,7 @@
 // ===== 게임 전용 한글 키보드 =====
 // 휴대폰 키보드는 기종·설정마다 높이가 달라 화면을 가리고, 아이폰에서는 자꾸 꺼짐.
 // 터치 기기에서는 게임 안에 작은 한글 키보드를 직접 그려서 씀. (PC는 실제 키보드 그대로)
-// 입력창 옆 버튼으로 두벌식 ↔ 천지인을 바꿀 수 있고, 고른 것은 기억함. (휴대폰 키보드는 화면을 가려서 고르는 칸에서 뺌)
+// 기본은 휴대폰 키보드. 입력창 옆 버튼으로 휴대폰 → 두벌식 → 천지인 게임 키보드로 바꿀 수 있고, 고른 것은 기억함.
 // game.js 다음에 불러와야 함 (els, answer, typingActive를 씀)
 const vk=(()=>{
 const CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ',JUNG='ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ',JONG=' ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ';
@@ -33,11 +33,14 @@ const SHIFT={'ㅂ':'ㅃ','ㅈ':'ㅉ','ㄷ':'ㄸ','ㄱ':'ㄲ','ㅅ':'ㅆ','ㅐ':'
 const QW_ROWS=['ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔ','ㅁㄴㅇㄹㅎㅗㅓㅏㅣ','ㅋㅌㅊㅍㅠㅜㅡ'];
 // 실제 키보드(태블릿 키보드 등)로 쳐도 두벌식 자리대로 들어가게
 const PHYS={q:'ㅂ',w:'ㅈ',e:'ㄷ',r:'ㄱ',t:'ㅅ',y:'ㅛ',u:'ㅕ',i:'ㅑ',o:'ㅐ',p:'ㅔ',a:'ㅁ',s:'ㄴ',d:'ㅇ',f:'ㄹ',g:'ㅎ',h:'ㅗ',j:'ㅓ',k:'ㅏ',l:'ㅣ',z:'ㅋ',x:'ㅌ',c:'ㅊ',v:'ㅍ',b:'ㅠ',n:'ㅜ',m:'ㅡ',Q:'ㅃ',W:'ㅉ',E:'ㄸ',R:'ㄲ',T:'ㅆ',O:'ㅒ',P:'ㅖ'};
-const MODES=['qwerty','cji'],LABEL={qwerty:'두벌식 키보드',cji:'천지인 키보드',system:'휴대폰 키보드'};
+// 게임 키보드는 일단 숨김 (헷갈릴 수 있어서). 다시 쓰려면 GAME_KB=true
+const GAME_KB=false;
+const MODES=GAME_KB?['system','qwerty','cji']:['system'],LABEL={qwerty:'두벌식 키보드',cji:'천지인 키보드',system:'휴대폰 키보드'};
 // 키보드 바꾸기 버튼 아이콘 (픽셀 그림): 두벌식 = 넓은 키보드, 천지인 = 3×4 키패드, 휴대폰 = 폰 모양
 const ICON={qwerty: '<svg viewBox="0 0 18 12" width="36" height="24" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'18\' height=\'1\'/><rect x=\'0\' y=\'11\' width=\'18\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'12\'/><rect x=\'17\' y=\'0\' width=\'1\' height=\'12\'/><rect x=\'2\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'11\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'14\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'3\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'6\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'9\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'12\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'8\' width=\'8\' height=\'2\'/></svg>', cji: '<svg viewBox="0 0 12 16" width="24" height="32" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'12\' height=\'1\'/><rect x=\'0\' y=\'15\' width=\'12\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'11\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'2\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'2\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'5\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'8\' width=\'2\' height=\'2\'/><rect x=\'2\' y=\'11\' width=\'2\' height=\'2\'/><rect x=\'5\' y=\'11\' width=\'2\' height=\'2\'/><rect x=\'8\' y=\'11\' width=\'2\' height=\'2\'/></svg>', system: '<svg viewBox="0 0 10 16" width="20" height="32" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><rect x=\'0\' y=\'0\' width=\'10\' height=\'1\'/><rect x=\'0\' y=\'15\' width=\'10\' height=\'1\'/><rect x=\'0\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'9\' y=\'0\' width=\'1\' height=\'16\'/><rect x=\'3\' y=\'2\' width=\'4\' height=\'1\'/><rect x=\'2\' y=\'4\' width=\'6\' height=\'8\'/><rect x=\'4\' y=\'13\' width=\'2\' height=\'1\'/></svg>'};
 const MAX=20,touch=matchMedia('(pointer:coarse)').matches;
-let mode='qwerty';try{const m=localStorage.getItem('wordRainKb');if(MODES.includes(m))mode=m}catch(e){}
+// 기본은 휴대폰 키보드. 버튼을 누르면 휴대폰 → 두벌식 → 천지인 (고른 것은 wordRainKb2에 기억. 예전 wordRainKb 값은 무시하고 모두 휴대폰 키보드로 시작)
+let mode='system';try{const m=localStorage.getItem('wordRainKb2');if(MODES.includes(m))mode=m}catch(e){}
 let units=[],shift=false,lastKey=null,rep=0;
 const input=els.input,form=els.form,root=document.documentElement;
 const pad=document.createElement('div');pad.id='vkb';pad.className='vkb';pad.setAttribute('aria-label','한글 키보드');form.after(pad);
@@ -55,7 +58,7 @@ function render(){
   toggle.innerHTML=ICON[mode];toggle.title=LABEL[mode];toggle.setAttribute('aria-label','키보드 바꾸기: 지금 '+LABEL[mode]);
 }
 function apply(){
-  toggle.hidden=!touch;form.classList.toggle('has-kbt',touch);root.classList.toggle('vk-on',on());
+  toggle.hidden=!touch||!GAME_KB;form.classList.toggle('has-kbt',touch&&GAME_KB);root.classList.toggle('vk-on',on());
   input.readOnly=on();input.inputMode=on()?'none':'text';pad.hidden=!on();render();
 }
 function update(){input.value=compose(units.map(u=>u.vg!==undefined?CJI_V[u.vg]:u.j))}
@@ -81,9 +84,9 @@ pad.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-k]');if(!
 const release=e=>{const b=e.target.closest?.('[data-k]');b?.classList.remove('down');if(!b||b.dataset.k==='bs')clearTimeout(rep)};
 ['pointerup','pointercancel','pointerout'].forEach(t=>pad.addEventListener(t,release));
 pad.addEventListener('contextmenu',e=>e.preventDefault());
-// 키보드 바꾸기: 두벌식 ↔ 천지인
+// 키보드 바꾸기: 휴대폰 → 두벌식 → 천지인
 toggle.addEventListener('mousedown',e=>e.preventDefault());
-toggle.addEventListener('click',()=>{mode=MODES[(MODES.indexOf(mode)+1)%MODES.length];try{localStorage.setItem('wordRainKb',mode)}catch(e){}
+toggle.addEventListener('click',()=>{mode=MODES[(MODES.indexOf(mode)+1)%MODES.length];try{localStorage.setItem('wordRainKb2',mode)}catch(e){}
   units=[];shift=false;lastKey=null;input.value='';apply();
   if(on())input.blur();else if(typingActive())input.focus({preventScroll:true});
   setTimeout(()=>window.dispatchEvent(new Event('resize')),60)});
