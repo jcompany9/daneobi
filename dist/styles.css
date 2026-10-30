@@ -611,3 +611,14 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 /* ===== 키보드 바꾸기 버튼: 글자 대신 픽셀 아이콘 ===== */
 .answer-bar .kb-toggle{display:grid;place-items:center}
 .answer-bar .kb-toggle svg{display:block}
+/* ===== DEAD LINE 글자: 그림자·가짜 굵게 없이 한 겹으로 ===== */
+.dead-line,.dead-line b{text-shadow:none!important;font-weight:400}
+/* ===== 게임 키보드 크게 (휴대폰 기본 키보드만큼) ===== */
+.vkb{--vk-h:60px;padding-top:4px}
+.vk-qw{gap:9px 4px}
+.vk-key{font-size:24px}
+.vk-key.fn{font-size:20px}
+.vk-cji{gap:8px 5px}
+.vk-cji .vk-key{font-size:24px}
+@media(max-height:700px){.vkb{--vk-h:54px}}
+@media(max-height:600px){.vkb{--vk-h:44px}}
