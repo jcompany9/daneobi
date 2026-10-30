@@ -40,17 +40,18 @@ function cleanName(v) {
 
 // 디스코드로 새 기록 알림. 실패해도 순위 저장에는 영향 없음 (최대 2.5초만 기다림)
 async function notifyDiscord({ name, score, mode, rank, total, from }) {
-  if (!DISCORD_WEBHOOK_URL) return;
+  if (!DISCORD_WEBHOOK_URL) { console.log('discord: DISCORD_WEBHOOK_URL 없음'); return; }
   const medal = ['🥇', '🥈', '🥉'][rank - 1] || '🏅';
   const content = `${medal} **${name}** ${score.toLocaleString('en-US')}점 — 오늘 ${rank}위 (${MODE_LABEL[mode] || mode} 단계까지, ${from}) · 오늘 기록 ${total}개`;
   try {
-    await fetch(DISCORD_WEBHOOK_URL, {
+    const r = await fetch(DISCORD_WEBHOOK_URL.trim(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: '단어비', content, allowed_mentions: { parse: [] } }),
       signal: AbortSignal.timeout(2500),
     });
-  } catch (e) {}
+    console.log('discord:', r.status, r.ok ? 'ok' : (await r.text()).slice(0, 200));
+  } catch (e) { console.log('discord: 실패', String(e).slice(0, 200)); }
 }
 
 function parseTop(flat) {
