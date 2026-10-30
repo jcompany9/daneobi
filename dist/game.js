@@ -19,7 +19,7 @@ const TYPE_LABEL={basic:'기본',more:'단어',noun:'명사',verb:'동사',adj:'
 
 const $=s=>document.querySelector(s);const screens=['startScreen','gameScreen','resultScreen'];
 const els={start:$('#startBtn'),retry:$('#retryBtn'),save:$('#saveImageBtn'),share:$('#shareBtn'),home:$('#homeBtn'),pause:$('#pauseBtn'),resume:$('#resumeBtn'),quit:$('#quitBtn'),modal:$('#pauseModal'),field:$('#playfield'),layer:$('#wordLayer'),form:$('#answerForm'),input:$('#answer'),score:$('#score'),combo:$('#combo'),level:$('#level'),levelGauge:$('#levelGauge'),gaugeValue:$('#gaugeValue'),feedback:$('#feedback'),comboBurst:$('#comboBurst'),levelUp:$('#levelUp'),resultBadge:$('#resultBadge'),ground:$('.ground'),deadline:$('.dead-line')};
-let state,raf,lastTime,spawnClock,selectedMode='elementary';
+let state,raf,lastTime,spawnClock,selectedMode='elementary',startTier=0;
 // 단어는 화면 높이와 상관없이 같은 시간 동안 떨어짐 (p: 0=맨 위, 1=바닥). 키보드로 화면이 줄어도 단어가 한꺼번에 놓침 처리되지 않음
 const TOP=-52,FALL=400;
 // 시간이 지날수록 단어가 더 자주 나옴 (낙하 속도는 그대로)
@@ -56,7 +56,7 @@ const LEVEL_TIME=30,COMBO_LEVEL=15,FLOOR_MAX=10;
 function nextWord(){const cur=state.tier;let t=cur;if(cur>0&&Math.random()>=.4)t=Math.floor(Math.random()*cur);const key=TIERS[t];let d=state.decks[key];if(!d||!d.length){const onScreen=new Set(state.active.map(w=>w.en));d=state.decks[key]=WORDS.filter(w=>w.difficulty===key&&!onScreen.has(w.en)).sort(()=>Math.random()-.5)}return d.pop()||WORDS[Math.floor(Math.random()*WORDS.length)]}
 
 function reset(){state={score:0,combo:0,maxCombo:0,correct:0,missed:[],active:[],running:true,paused:false,ending:false,elapsed:0,level:1,levelTime:0,floor:0,risePx:-1,bonus:[],bonusClock:0,tier:0,decks:{}};els.layer.innerHTML='';bonusLayer.innerHTML='';els.field.classList.remove('hit','ground-impact','deadline-hit','critical');els.field.style.setProperty('--ground-rise','0px');spawnClock=0;lastTime=performance.now();applyGroundRise();applySky();updateHud()}
-function start(){sfx.unlock();sfx.start();lockPortrait();reset();show('gameScreen');spawn();els.input.value='';window.vk?.clear();focusInput();setTimeout(()=>{if(document.activeElement!==els.input)focusInput()},120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+function start(){sfx.unlock();sfx.start();lockPortrait();reset();state.tier=startTier;state.level=startTier*2+1;applySky();updateHud();show('gameScreen');spawn();els.input.value='';window.vk?.clear();focusInput();setTimeout(()=>{if(document.activeElement!==els.input)focusInput()},120);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
 function spawn(){const word=nextWord(),node=document.createElement('div');node.className='word';node.textContent=word.en;els.layer.appendChild(node);const {lane,x}=pickLane(node.offsetWidth),base=DIFFICULTY[selectedMode].speed;const item={...word,node,x,lane,p:0,speed:base+Math.random()*7};state.active.push(item);node.style.transform=`translate(${x}px,${TOP}px)`}
 function showLevelUp(title,sub){sfx.levelUp();els.levelUp.querySelector('small').textContent=title||'LEVEL UP';els.levelUp.querySelector('span').textContent=state.level;els.levelUp.querySelector('em').textContent=sub||'';els.levelUp.classList.remove('show');void els.levelUp.offsetWidth;els.levelUp.classList.add('show');navigator.vibrate?.([25,35,55])}
 // 실수(단어 놓침, 카드 파괴)할 때마다 바닥이 한 칸씩 올라옴. DEAD LINE에 닿으면 게임 끝
@@ -199,3 +199,12 @@ function tidy(){const v=cleanName(input.value);if(v!==input.value)input.value=v}
 form.addEventListener('submit',async e=>{e.preventDefault();if(!pending||btn.disabled)return;const name=cleanName(input.value);if(!name){msg.textContent='이름을 1~3글자로 입력해 주세요';input.focus();return}btn.disabled=true;btn.textContent='...';try{localStorage.setItem('wordRainName',name)}catch(e){}const id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);const entry={id,name,score:pending.score,mode:pending.mode,t:Date.now()};let result;try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,name,score:pending.score,mode:pending.mode})});if(!r.ok)throw 0;result=await r.json();online=true}catch(err){result=localSave(entry);online=false}lastId=id;try{localStorage.setItem('wordRainLastId',id)}catch(e){}board=result.scores||board;pending=null;input.disabled=true;input.blur();btn.textContent='✓';setTimeout(()=>{neModal.hidden=true},1600);msg.textContent=result.rank&&result.rank<=TOP_N?`${RANK_LABEL[result.rank-1]}에 이름을 올렸어요!`:'기록했어요!';sfx.start()});
 $('#neClose').addEventListener('click',()=>{sfx.click();input.blur();neModal.hidden=true});neModal.addEventListener('click',e=>{if(e.target===neModal){input.blur();neModal.hidden=true}});
 refresh();return{refresh,onGameEnd}})();
+
+// ===== 시작 단계 고르기 (첫 화면) =====
+// 고른 단계의 시작 레벨에서 출발 (초등 Lv1, 중등 Lv3, 고등 Lv5, 중급 Lv7, 고급 Lv9). 레벨이 높으니 점수 배율도 그만큼 높음
+(()=>{const pick=$('#levelPick');if(!pick)return;const chips=[...pick.querySelectorAll('.lv-chip')];
+try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<chips.length)startTier=v}catch(e){}
+function select(t,scroll){startTier=t;chips.forEach((c,i)=>{c.classList.toggle('active',i===t);c.setAttribute('aria-checked',i===t)});try{localStorage.setItem('wordRainStart',t)}catch(e){}
+  if(scroll){const c=chips[t];pick.scrollTo({left:c.offsetLeft-(pick.clientWidth-c.offsetWidth)/2,behavior:scroll==='smooth'?'smooth':'auto'})}}
+chips.forEach((c,i)=>{c.setAttribute('role','radio');c.addEventListener('click',()=>{sfx.unlock();sfx.click();select(i,'smooth')})});
+select(startTier,false);requestAnimationFrame(()=>select(startTier,true))})();

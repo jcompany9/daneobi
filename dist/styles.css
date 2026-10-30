@@ -410,3 +410,15 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .mini-list .mini-empty{display:block;color:#9e98d1;font-size:12px;text-align:center;line-height:1.6;padding:6px 0}
 @media(max-height:640px){.hs-list.mini-list{max-height:56px}}
 @media(min-height:740px){.hs-list.mini-list{max-height:110px}}
+/* 시작 단계 고르기: 가로로 넘기는 띠 */
+.lv-title{margin:0 0 6px;font-size:13px;color:#29254f;text-align:left}
+.lv-title small{font-size:10px;color:#88829e;margin-left:4px}
+.level-pick{display:flex;gap:8px;margin:0 -4px 12px;padding:4px 4px 8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.level-pick::-webkit-scrollbar{display:none}
+.lv-chip{flex:0 0 auto;min-width:96px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;border:3px solid #29254f;background:#fff7dc;color:#29254f;font:inherit;box-shadow:3px 3px 0 #29254f;cursor:pointer}
+.lv-chip b{font-size:17px;font-weight:400}
+.lv-chip small{font-size:10px;color:#6b6594;white-space:nowrap}
+.lv-chip.active{background:#ffd84d;box-shadow:3px 3px 0 #ff5278}
+.lv-chip.active small{color:#29254f}
+.lv-chip:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #29254f}
+@media(max-height:640px){.lv-chip{padding:5px 8px}.lv-chip b{font-size:15px}.level-pick{margin-bottom:8px}}
