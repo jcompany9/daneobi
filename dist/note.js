@@ -81,12 +81,15 @@ function badge(){$('#noteCount').textContent=learning().length;const n=streakNow
 const LN=window.Capacitor?.Plugins?.LocalNotifications,IDS=[1,2,3,4,5,6,7];
 const hourLabel=h=>(h<12?'오전 ':'오후 ')+((h%12)||12)+'시';
 // 알림 시각 고르기: 오전 6시 ~ 밤 11시, 정시 단위
-(()=>{const sel=$('#alarmHour');for(let h=6;h<24;h++){const o=document.createElement('option');o.value=h;o.textContent=hourLabel(h);sel.append(o)}
-  sel.value=settings.hour;sel.addEventListener('change',async()=>{settings.hour=Number(sel.value);store('wordRainLearn',settings);
+// 알림이 꺼져 있으면 "알림 없음"으로 표시. 시각을 고르면 켜지고, "알림 없음"을 고르면 꺼짐
+const showHour=()=>{$('#alarmHour').value=settings.alarm?settings.hour:'off'};
+(()=>{const sel=$('#alarmHour');const off=document.createElement('option');off.value='off';off.textContent='알림 없음';sel.append(off);for(let h=6;h<24;h++){const o=document.createElement('option');o.value=h;o.textContent=hourLabel(h);sel.append(o)}
+  showHour();sel.addEventListener('change',async()=>{if(sel.value==='off'){await setAlarm(false);return}
+    settings.hour=Number(sel.value);store('wordRainLearn',settings);
     if(!settings.alarm)await setAlarm(true);else await scheduleAlarms()})})();
 async function setAlarm(on){
   if(on&&LN){try{const p=await LN.requestPermissions();on=p.display==='granted'}catch(e){on=false}}
-  settings.alarm=!!on&&!!LN;store('wordRainLearn',settings);$('#alarmToggle').checked=settings.alarm;await scheduleAlarms();return settings.alarm}
+  settings.alarm=!!on&&!!LN;store('wordRainLearn',settings);$('#alarmToggle').checked=settings.alarm;showHour();await scheduleAlarms();return settings.alarm}
 async function scheduleAlarms(){if(!LN)return;
   try{await LN.cancel({notifications:IDS.map(id=>({id}))})}catch(e){}
   if(!settings.alarm)return;
@@ -114,7 +117,7 @@ function render(){
     if(tab==='learning'){dots.textContent='●'.repeat(r.s)+'○'.repeat(LEARN-r.s);if((r.d||0)<=now)li.classList.add('due');else{const days=Math.ceil(((r.d||0)-now)/DAY);em.textContent=`✕${r.m} · ${days}일 뒤`}}else dots.textContent='✓';
     li.append(b,sp,em,dots);list.appendChild(li)}
   const rs=$('#reviewStart');rs.disabled=!L.length;rs.querySelector('span').textContent=L.length?`(${due||L.length}) →`:'';
-  $('#alarmRow').hidden=!LN;$('#alarmToggle').checked=settings.alarm;badge()}
+  $('#alarmRow').hidden=!LN;$('#alarmToggle').checked=settings.alarm;showHour();badge()}
 function open(){sfx.click();tab='learning';render();show('noteScreen');$('#noteScreen').scrollTop=0}
 
 $('#noteOpen').hidden=false;$('#noteOpen').addEventListener('click',open);
