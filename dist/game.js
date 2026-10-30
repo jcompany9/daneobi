@@ -200,11 +200,16 @@ form.addEventListener('submit',async e=>{e.preventDefault();if(!pending||btn.dis
 $('#neClose').addEventListener('click',()=>{sfx.click();input.blur();neModal.hidden=true});neModal.addEventListener('click',e=>{if(e.target===neModal){input.blur();neModal.hidden=true}});
 refresh();return{refresh,onGameEnd}})();
 
-// ===== 시작 단계 고르기 (첫 화면) =====
-// 고른 단계의 시작 레벨에서 출발 (초등 Lv1, 중등 Lv3, 고등 Lv5, 중급 Lv7, 고급 Lv9). 레벨이 높으니 점수 배율도 그만큼 높음
-(()=>{const pick=$('#levelPick');if(!pick)return;const chips=[...pick.querySelectorAll('.lv-chip')];
-try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<chips.length)startTier=v}catch(e){}
-function select(t,scroll){startTier=t;chips.forEach((c,i)=>{c.classList.toggle('active',i===t);c.setAttribute('aria-checked',i===t)});try{localStorage.setItem('wordRainStart',t)}catch(e){}
-  if(scroll){const c=chips[t];pick.scrollTo({left:c.offsetLeft-(pick.clientWidth-c.offsetWidth)/2,behavior:scroll==='smooth'?'smooth':'auto'})}}
-chips.forEach((c,i)=>{c.setAttribute('role','radio');c.addEventListener('click',()=>{sfx.unlock();sfx.click();select(i,'smooth')})});
-select(startTier,false);requestAnimationFrame(()=>select(startTier,true))})();
+// ===== 시작 레벨 고르기 (첫 화면) =====
+// 선 위의 동그라미를 누르거나 선을 따라 끌어서 고름. LV 1·3·5·7·9 = 단어 단계가 하나씩 열리는 레벨. 고른 것은 기억함
+(()=>{const pick=$('#levelPick');if(!pick)return;const nodes=[...pick.querySelectorAll('.lv-node')],fill=pick.querySelector('.lv-fill');
+try{const v=Number(localStorage.getItem('wordRainStart'));if(v>=0&&v<nodes.length)startTier=v}catch(e){}
+function select(t,sound){if(sound&&t!==startTier){sfx.unlock();sfx.click()}startTier=t;const lv=t*2+1;nodes.forEach((n,i)=>{n.classList.toggle('active',i===t);n.classList.toggle('passed',i<t)});fill.style.width=t/(nodes.length-1)*100+'%';
+  $('#lvNow').textContent=lv;$('#lvMult').textContent=`점수 ×${1+(lv-1)*.25}`;pick.setAttribute('aria-valuenow',lv);try{localStorage.setItem('wordRainStart',t)}catch(e){}}
+function nearest(x){let best=0,d=1e9;nodes.forEach((n,i)=>{const r=n.getBoundingClientRect(),dd=Math.abs(r.left+r.width/2-x);if(dd<d){d=dd;best=i}});return best}
+let drag=false;
+pick.addEventListener('pointerdown',e=>{drag=true;pick.setPointerCapture?.(e.pointerId);select(nearest(e.clientX),true)});
+pick.addEventListener('pointermove',e=>{if(drag)select(nearest(e.clientX),true)});
+['pointerup','pointercancel'].forEach(t=>pick.addEventListener(t,()=>{drag=false}));
+pick.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();select(Math.max(0,Math.min(nodes.length-1,startTier+(e.key==='ArrowRight'?1:-1))),true)}});
+select(startTier,false)})();
