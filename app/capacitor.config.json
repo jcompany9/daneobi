@@ -1,0 +1,9 @@
+{
+  "appId": "com.jcompany9.daneobi",
+  "appName": "단어비",
+  "webDir": "../dist",
+  "backgroundColor": "#201d49",
+  "android": {
+    "backgroundColor": "#201d49"
+  }
+}

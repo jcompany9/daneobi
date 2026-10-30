@@ -1,0 +1,19 @@
+{
+  "name": "daneobi-app",
+  "private": true,
+  "description": "단어비 안드로이드·iOS 앱 (Capacitor). 게임 파일은 ../dist 를 그대로 씀",
+  "scripts": {
+    "sync": "cap sync",
+    "open:android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0"
+  }
+}

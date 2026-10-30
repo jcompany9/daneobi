@@ -44,8 +44,22 @@ function parseTop(flat) {
   return list;
 }
 
+// 단어비 앱(안드로이드·아이폰) 안의 게임은 이 주소에서 열려서, 순위 요청을 허용해 줌
+const APP_ORIGINS = ['https://localhost', 'capacitor://localhost', 'http://localhost'];
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
+  const origin = req.headers.origin;
+  if (APP_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return;
+  }
   if (!REDIS_URL || !REDIS_TOKEN) {
     res.status(503).json({ error: 'not_configured' });
     return;

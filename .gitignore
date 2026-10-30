@@ -1,1 +1,3 @@
 outputs/
+app/node_modules/
+app/release/

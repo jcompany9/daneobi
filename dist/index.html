@@ -29,6 +29,7 @@
         <p class="lv-title">START LEVEL <b id="lvNow">1</b><small id="lvMult">점수 ×1</small></p>
         <div id="levelPick" class="level-pick" role="slider" tabindex="0" aria-label="시작 레벨" aria-valuemin="1" aria-valuemax="19"><span class="lv-track"><i class="lv-fill"></i></span><button type="button" class="lv-node" data-i="0" aria-label="레벨 1"><i></i><small>1</small></button><button type="button" class="lv-node" data-i="1" aria-label="레벨 3"><i></i><small>3</small></button><button type="button" class="lv-node" data-i="2" aria-label="레벨 5"><i></i><small>5</small></button><button type="button" class="lv-node" data-i="3" aria-label="레벨 7"><i></i><small>7</small></button><button type="button" class="lv-node" data-i="4" aria-label="레벨 9"><i></i><small>9</small></button><button type="button" class="lv-node" data-i="5" aria-label="레벨 11"><i></i><small>11</small></button><button type="button" class="lv-node" data-i="6" aria-label="레벨 13"><i></i><small>13</small></button><button type="button" class="lv-node" data-i="7" aria-label="레벨 15"><i></i><small>15</small></button><button type="button" class="lv-node" data-i="8" aria-label="레벨 17"><i></i><small>17</small></button><button type="button" class="lv-node" data-i="9" aria-label="레벨 19"><i></i><small>19</small></button></div>
         <button id="startBtn" class="primary">게임 시작 <span>→</span></button>
+        <button id="noteOpen" type="button" class="note-btn" hidden>📒 오답 노트 <b id="noteCount">0</b></button>
         <p class="best" hidden><b id="bestStart">0</b></p>
       </div>
     </section>
@@ -58,6 +59,16 @@
         <input id="answer" type="text" inputmode="text" enterkeyhint="enter" placeholder="뜻을 입력하세요" maxlength="20" />
         <button id="answerBtn" aria-label="정답 확인">↵</button>
       </form>
+    </section>
+
+    <!-- 오답 노트 (앱에서만): 틀리거나 놓친 단어가 모이고, 3번 연속 맞히면 외운 단어로 넘어감 -->
+    <section id="noteScreen" class="screen note-screen" aria-label="오답 노트">
+      <header class="note-head"><button id="noteBack" type="button" class="icon-btn" aria-label="처음으로">←</button><h2>오답 노트</h2></header>
+      <div class="note-stats"><p><small>외우는 중</small><b id="nsLearning">0</b></p><p><small>외운 단어</small><b id="nsLearned">0</b></p><p><small>총 틀린 횟수</small><b id="nsMiss">0</b></p></div>
+      <div class="note-tabs" role="tablist"><button type="button" data-tab="learning" class="on">외우는 중</button><button type="button" data-tab="learned">외운 단어</button></div>
+      <p class="note-tip">같은 단어를 <b>3번 연속</b> 맞히면 외운 단어로 넘어가요.</p>
+      <ol id="noteList" class="note-list"></ol>
+      <button id="reviewStart" type="button" class="primary">오답만 떨어지는 판 <span>→</span></button>
     </section>
 
     <section id="resultScreen" class="screen result-screen" aria-label="결과">
@@ -112,5 +123,7 @@
   <script src="game.js"></script>
   <script src="keyboard.js"></script>
   <script src="fx.js"></script>
+  <script src="note.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

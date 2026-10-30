@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">단어비</string>
+    <string name="title_activity_main">단어비</string>
+    <string name="package_name">com.jcompany9.daneobi</string>
+    <string name="custom_url_scheme">com.jcompany9.daneobi</string>
+</resources>
