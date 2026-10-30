@@ -10,6 +10,11 @@ const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_R
 const TOP_N = 10;
 const MODES = ['elementary', 'middle', 'high', 'intermediate', 'advanced'];
 const MAX_SCORE = 5000000;
+// 디스코드 알림: Vercel 환경 변수 DISCORD_WEBHOOK_URL 에 디스코드 웹후크 주소를 넣으면,
+// 누군가 순위에 이름을 남길 때마다 그 채널에 메시지가 옴. 비워 두면 알림 없음.
+// (웹후크 주소는 비밀번호처럼 다룰 것. 공개 저장소라 코드에 직접 적지 않음)
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
+const MODE_LABEL = { elementary: '초등', middle: '중등', high: '고등', intermediate: '중급', advanced: '고급' };
 
 // 한국 시간 기준 오늘 날짜 (YYYY-MM-DD)
 function today() {
@@ -31,6 +36,21 @@ async function redis(commands) {
 function cleanName(v) {
   const chars = [...String(v || '').toUpperCase()].filter(c => /[A-Z0-9가-힣]/.test(c));
   return chars.slice(0, 3).join('');
+}
+
+// 디스코드로 새 기록 알림. 실패해도 순위 저장에는 영향 없음 (최대 2.5초만 기다림)
+async function notifyDiscord({ name, score, mode, rank, total, from }) {
+  if (!DISCORD_WEBHOOK_URL) return;
+  const medal = ['🥇', '🥈', '🥉'][rank - 1] || '🏅';
+  const content = `${medal} **${name}** ${score.toLocaleString('en-US')}점 — 오늘 ${rank}위 (${MODE_LABEL[mode] || mode} 단계까지, ${from}) · 오늘 기록 ${total}개`;
+  try {
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: '단어비', content, allowed_mentions: { parse: [] } }),
+      signal: AbortSignal.timeout(2500),
+    });
+  } catch (e) {}
 }
 
 function parseTop(flat) {
@@ -93,12 +113,15 @@ module.exports = async (req, res) => {
       }
 
       const member = JSON.stringify({ id, name, mode, t: Date.now() });
-      const [, , rank, flat] = await redis([
+      const [, , rank, flat, total] = await redis([
         ['ZADD', key, String(score), member],
         ['EXPIRE', key, String(3 * 24 * 3600)],
         ['ZREVRANK', key, member],
         ['ZREVRANGE', key, '0', String(TOP_N - 1), 'WITHSCORES'],
+        ['ZCARD', key],
       ]);
+      const from = APP_ORIGINS.includes(req.headers.origin) ? '앱' : '웹';
+      await notifyDiscord({ name, score, mode, rank: rank + 1, total, from });
       res.status(200).json({ date: today(), rank: rank + 1, scores: parseTop(flat) });
       return;
     }
