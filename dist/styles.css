@@ -606,3 +606,5 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 /* ===== 위쪽 레벨 표시·일시정지 버튼: 픽셀 글꼴이 또렷한 16px, 흐림 없이 ===== */
 .hud .level b,.kb-open .hud .level b{font-size:16px;line-height:16px;padding:3px 6px 2px}
 .hud .icon-btn,.kb-open .icon-btn{opacity:1;font-size:16px}
+/* ===== 위쪽 레벨·버튼: 그림자와 가짜 굵게 없이 (두 겹으로 보이던 것) ===== */
+.hud .level b,.phase-day .hud .level b,.phase-sunset .hud .level b,.phase-night .hud .level b,.hud .icon-btn{text-shadow:none!important;font-weight:400}

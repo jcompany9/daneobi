@@ -72,7 +72,7 @@ function streakNow(){const t=today(),y=today(Date.now()-DAY);return streak.last=
 // 결과 화면 위에 "오답 노트에 n개 추가" 한 줄 + 알림 켜기 안내
 function onEnd(){touchStreak();const rv=$('#review');
   if(added>0){const p=document.createElement('p');p.className='note-added';p.textContent=`📒 오답 노트에 ${added}개 추가 (외우는 중 ${learning().length}개)`;rv.prepend(p)}
-  if(!settings.alarm&&learning().length){const b=document.createElement('button');b.type='button';b.className='note-alarm-ask';b.textContent=`🔔 매일 ${hourLabel(settings.hour)} 복습 알림 받기`;b.addEventListener('click',async()=>{await setAlarm(true);b.textContent=settings.alarm?'🔔 알림을 켰어요':'알림이 꺼져 있어요 (설정에서 허용해 주세요)';b.disabled=true});rv.prepend(b)}
+  // 결과 화면의 알림 받기 버튼은 뺌 (알림은 오답 노트 화면에서 켬)
   added=0;reviewDoneShown=false;scheduleAlarms()}
 
 function badge(){$('#noteCount').textContent=learning().length;const n=streakNow();const s=$('#streakChip');s.hidden=!n;s.textContent=`🔥 ${n}일 연속`}
