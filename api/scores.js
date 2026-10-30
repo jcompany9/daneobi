@@ -27,10 +27,10 @@ async function redis(commands) {
   return out.map(x => { if (x.error) throw new Error(x.error); return x.result; });
 }
 
-// 이름: 최대 6글자, 영어 대문자, 숫자, 한글만 (학교 이름도 들어가게)
+// 이름: 최대 3글자(이니셜), 영어 대문자, 숫자, 한글만
 function cleanName(v) {
   const chars = [...String(v || '').toUpperCase()].filter(c => /[A-Z0-9가-힣]/.test(c));
-  return chars.slice(0, 6).join('');
+  return chars.slice(0, 3).join('');
 }
 
 function parseTop(flat) {

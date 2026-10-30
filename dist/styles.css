@@ -584,11 +584,6 @@ html,body,button,input,.app{font-family:"NeoDGM","GalmuriPixel","Courier New",mo
 .note-alarm-ask{display:block;width:100%;margin:0 0 8px;padding:10px;border:3px solid #29254f;background:#ffd84d;color:#29254f;font:inherit;font-size:14px;cursor:pointer}
 .note-alarm-ask:disabled{background:#fff7dc;color:#88829e}
 .start-screen>.mini-rank,.start-screen>.start-card{flex-shrink:0}
-/* ===== 순위 이름 6글자 (한글·학교 이름) ===== */
-.hs-head,.hs-list li{grid-template-columns:40px 1fr 98px}
-.hs-list li span:last-child{white-space:nowrap;overflow:hidden;text-overflow:clip}
-.ne-row input{width:190px;font-size:20px;letter-spacing:.05em;padding:0}
-.ne-row input::placeholder{color:#4d477d}
 /* ===== 단어장 버튼 작게: 네 개가 한 줄에 다 보이게 ===== */
 .exam-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:0 0 4px;padding:0 0 4px;overflow:visible}
 .exam-chip{min-width:0;padding:4px 2px;gap:1px;border-width:2px;box-shadow:2px 2px 0 #29254f}
